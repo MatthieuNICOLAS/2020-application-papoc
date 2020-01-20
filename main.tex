@@ -144,29 +144,80 @@ However, as the goal is to reduce LogootSplit's evergrowing memory overhead, we 
 
 \label{sec:dealing-with-concurrent-updates}
 
-\begin{itemize}
-    \item Applying it as such would lead to inconsistencies
-    \item Need to detect concurrent updates
-    \item Set epoch-based system
-    \begin{itemize}
-        \item Each \emph{rename} operation makes sequence move to new epoch
-        \item Attach to operations epoch of generation
-    \end{itemize}
-    \item Need to transform concurrent updates
-    \item Add rewriting rules
-    \begin{itemize}
-        \item Find id of predecessor in former state
-        \item Compute its counterpart in renamed state
-        \item Use it as a prefix
-    \end{itemize}
-\end{itemize}
+As \emph{rename} operations can be issued without any kind of coordination, it is possible for other nodes to perform updates concurrently.
+Since identifiers are modified by the \emph{renaming} mechanism, applying concurrent updates as they are would result in inconsistencies as illustrated in \autoref{fig:concurrent-insert-rename-inconsistent}.
+It is thus necessary to handle concurrent operations to \emph{rename} operations in a particular manner.
 
-As \emph{rename} operations can be issued without any kind of coordination, it is possible for other nodes to perform concurrent updates.
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=1\textwidth]{img/concurrent-insert-rename-inconsistent.png}
+        \caption{Concurrent update leading to inconsistency}
+        \label{fig:concurrent-insert-rename-inconsistent}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=1\textwidth]{img/concurrent-insert-rename-fixed.png}
+        \caption{Fixed scenario}
+        \label{fig:concurrent-insert-rename-fixed}
+    \end{subfigure}
+    \caption{Dealing with concurrent updates}
+    \label{fig:concurrent-insert-rename}
+\end{figure}
+
+To detect them, we use an \emph{epoch-based} system.
+We add an \emph{epoch} to the sequence as a property.
+Each time a \emph{rename} operation is applied, the sequence progresses to a new epoch.
+When an operation is issued, we attach to it the current epoch.
+Upon the reception of an operation, nodes compare their current epoch to the operation's one.
+If they differ, nodes have to transform the operation before applying it.
+
+To transform an operation, nodes use the algorithm described in \autoref{alg:renamePos}.
+This algorithm enables nodes to rename identifiers according to the \emph{rename} operation.
+The main idea of this algorithm is to use the predecessor of the given identifier to do so.
+The algorithm consists mainly in
+\begin{enumerate*}
+    \item finding the predecessor of the given id in the former state
+    \item computing its counterpart in the renamed state
+    \item prepending it to the given id to generate the renamed id.
+\end{enumerate*}
+An example of its usage is illustrated in \autoref{fig:concurrent-insert-rename-fixed}.
+
+\begin{algorithm}
+    \caption{Rename position}
+    \label{alg:renamePos}
+    \begin{algorithmic}
+    \Function{renamePos}{$pos: P, newId: \mathbb{I}, newSeq: \mathbb{N}, renamedBlocks: \mathlist{b}{B}$}{: $P$}
+        \State $firstPos \gets posBegin(renamedBlocks[0])$
+        \State $lastPos \gets posEnd(renamedBlocks[renamedBlocks.length - 1]$\\
+
+        \State $newPriority \gets priority(firstPos)$
+        \State $newFirstPos \gets new \ P(newPriority, newId, newSeq, 0)$
+        \State $newLastPos \gets new \ P(newPriority, newId, newSeq, length)$\\
+
+        \If{$hasBeenRenamed(pos, renamedBlocks)$}
+            \State $index \gets findIndex(pos, renamedBlocks)$
+            \State \Return $new \ P(newPriority, newId, newSeq, index)$
+        \ElsIf{$firstPos < pos$ \textbf{and} $pos < lastPos$}
+            \State $predecessor \gets findPredecessor(pos, renamedBlocks)$
+            \State $indexOfPredecessor \gets findIndex(predecessor, renamedBlocks)$
+            \State $newPredecessor \gets new \ P(newPriority, newId, newSeq, indexOfPredecessor)$
+            \State \Return $concat(newPredecessor, pos)$
+        \ElsIf{$lastPos < pos$ \textbf{and} $pos < newLastPos$}
+            \State \Return $concat(newLastPos, pos)$
+        \ElsIf{$newFirstPos < pos$ \textbf{and} $pos < firstPos$}
+            \State $predecessorOfNewFirstPos \gets new \ P(newPriority, newId, newSeq, -1)$
+            \State \Return $concat(predecessorOfNewFirstPos, pos)$
+        \Else
+            \State \Return $pos$ \Comment Return the position unchanged as it does not interfere with the renaming
+        \EndIf
+    \EndFunction
+    \end{algorithmic}
+\end{algorithm}
 
 \subsection{Downsides}
 
 \begin{itemize}
-    \item Need to store former until no more concurrent operations
+    \item Need to store former state until no more concurrent operations
     \item Need to broadcast former state to other nodes
 \end{itemize}
 
