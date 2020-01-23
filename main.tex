@@ -86,7 +86,7 @@ To resolve conflicts in a deterministic manner, CRDTs usually attach identifiers
 To address this issue, we propose a new CRDT for Sequence which embeds a renaming mechanism. It enables nodes to reassign shorter identifiers to elements in an uncoordinated manner. Obtained experiment results demonstrate that this mechanism decreases the overhead of the replicated data structure and eventually limits it.
 \end{abstract}
 
-\keywords{CRDT, collaborative editing}
+\keywords{CRDT, real-time collaborative editing, eventual consistency, memory-wise optimisation}
 
 \maketitle
 
@@ -101,7 +101,7 @@ To address this issue, we propose a new CRDT for Sequence which embeds a renamin
 \section{Background}
 
 To solve conflicts deterministically and ensure the convergence of all nodes, \acp{CRDT} relies on additional metadata.
-In the context of Sequence \acp{CRDT}, two different approaches were proposed, each trying to minimize the overhead introduced.
+In the context of Sequence \acp{CRDT}, two different approaches were proposed, each trying to minimise the overhead introduced.
 The first one affixes constant-sized identifiers to each value in the sequence and uses them to represent the sequence as a linked list.
 The downside of this approach is an evergrowing overhead, as it needs to keep removed values to deal with potential concurrent updates, effectively turning them into tombstones.
 The second one avoids the need of tombstones by instead attaching densely-ordered identifiers to values.
@@ -275,7 +275,7 @@ To validate the proposed renaming mechanism, we performed an experimental evalua
 
 Since we were not able to retrieve an existing dataset of traces of realtime collaborative editing sessions, we ran simulations to generate traces to evaluate our data structure.
 The simulations depict the following scenario: several authors collaborate in order to write an article.
-Initially, they prioritize adding content as everything remains to be done.
+Initially, they prioritise adding content as everything remains to be done.
 Thus they mainly insert elements into the document during this first phase.
 A few \emph{remove} operations are still issued to simulate spelling mistakes.
 Once the document approaches the critical length, the collaborators switch to the second phase.
@@ -321,7 +321,7 @@ On this plot, the blue line corresponds to the size of the content while the red
 
 The green line illustrates the growth of the RenamableLogootSplit document in its best-case scenario.
 In this scenario, \emph{rename} operations become stable as soon as they are issued.
-Former states can then be garbage collected safely, maximizing the benefits of the \emph{renaming} mechanism.
+Former states can then be garbage collected safely, maximising the benefits of the \emph{renaming} mechanism.
 In this case, we observe that \emph{rename} operations reset the overhead of the data structure and eventually reduce by hundred times the document size compared to LogootSplit equivalent one.
 
 As for the orange line, it represents RenamableLogootSplit worst-case scenario.
