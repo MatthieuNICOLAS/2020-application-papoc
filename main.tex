@@ -390,4 +390,14 @@ It is necessary to take this concern into account when designing the strategy us
 
 \section{Conclusions and future work}
 
+\begin{itemize}
+    \item Designed new dense identifier-based Sequence CRDT embedding a renaming mechanism : \emph{RenamableLogootSplit}
+    \item Achieved better performances memory-wise than state of the art, even in worst-case scenario...
+    \item ... at the cost of expensive but infrequent \emph{rename} operations
+    \item Study user behavior to set a limit to integration time of \emph{rename} operations
+    \item Present and validate mechanism to handle concurrent \emph{rename} operations
+    \item Design strategies to limit likelyhood of concurrent \emph{rename} operations
+    \item Design strategies to limit overall workload in case of concurrent \emph{rename} operations
+\end{itemize}
+
 \end{document}
