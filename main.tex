@@ -129,16 +129,46 @@ In the context of this paper, we focus on the later approach.
 We propose a new Sequence \ac{CRDT} relying on dense identifiers to order elements : \emph{RenamableLogootSplit}.
 
 To address the limitations of LogootSplit, we embed in this data structure a renaming mechanism.
-The purpose of this mechanism is to reassign shorter identifiers to values in such a manner that we are then able to aggregate them into one unique block.
-This allows to reduce the metadata of the whole sequence.
-However, as the goal is to reduce LogootSplit's evergrowing memory overhead, we have to design the renaming mechanism while minimizing its own footprint.
+The purpose of this mechanism is to reassign shorter identifiers to elements to reduce the metadata of the whole sequence.
 
 \subsection{\emph{rename} operation}
 
-\begin{itemize}
-    \item Reassign arbitrary identifiers to elements
-    \item Such as elements can be grouped into only one block, independently of the current size of the sequence
-\end{itemize}
+\emph{RenamableLogootSplit} enables nodes to reduce the overhead of their replica by the means of a new operation : the \emph{rename} operation.
+This operation reassigns arbitrary identifiers to elements.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=1\textwidth]{img/renaming-first-id.png}
+        \caption{Selecting the new identifier of the first element}
+        \label{fig:renaming-first-id}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=1\textwidth]{img/renaming-second-id.png}
+        \caption{Selecting the new identifier of the second one}
+        \label{fig:renaming-second-id}
+    \end{subfigure}
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=1\textwidth]{img/renaming-final-state.png}
+        \caption{Final state obtained}
+        \label{fig:renaming-final-state}
+    \end{subfigure}
+    \caption{Renaming the sequence}
+    \label{fig:renaming}
+\end{figure}
+
+Its behavior is illustrated in \autoref{fig:renaming} and can be described as follow :
+\begin{enumerate*}
+    \item It reuses the id of the first element of the sequence, but modified with the node id and the sequence number of the current node (\autoref{fig:renaming-first-id})
+    \item It generates contiguous identifiers for all following elements (\autoref{fig:renaming-second-id}).
+\end{enumerate*}
+As we assign contiguous identifiers to all elements of the sequence, we can eventually group them into one block as illustrated in \autoref{fig:renaming-final-state}.
+
+As stated previously, nodes can issue this type of operation without any coordination.
+However, the designed \emph{rename} operation is not intrinsically commutative.
+Additional steps are thus needed to handle scenarios with concurrent \emph{rename} operations are issued.
+For the sake of simplicity and brevity, we focus in this paper only on scenarios without any concurrent ones.
+We leave the presentation of the mentioned additional steps to a future work.
 
 \subsection{Dealing with concurrent updates}
 
