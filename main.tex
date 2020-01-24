@@ -30,6 +30,8 @@
 
 % Commands
 %---------
+\newcommand{\ie}{i.e. }
+
 \newcommand{\inbb}[1]{\in \mathbb{#1}}
 \newcommand{\mathlist}[2]{\set{#1_i \in #2}_{i \inbb{N}}}
 \newcommand{\set}[1]{\left\{#1\right\}} % set brace notation
@@ -159,16 +161,29 @@ This operation reassigns arbitrary identifiers to elements.
 
 Its behavior is illustrated in \autoref{fig:renaming} and can be described as follow :
 \begin{enumerate*}
-    \item It reuses the id of the first element of the sequence, but modified with the node id and the sequence number of the current node (\autoref{fig:renaming-first-id})
+    \item It reuses the id of the first element of the sequence, but modified with the node's own id and sequence number (\autoref{fig:renaming-first-id})
     \item It generates contiguous identifiers for all following elements (\autoref{fig:renaming-second-id}).
 \end{enumerate*}
 As we assign contiguous identifiers to all elements of the sequence, we can eventually group them into one block as illustrated in \autoref{fig:renaming-final-state}.
+It allows nodes to benefit the most from the block feature and to minimise the overhead of the resulting state.
 
-As stated previously, nodes can issue this type of operation without any coordination.
+\begin{itemize}
+    \item Other nodes have to apply the same renaming
+    \item Node initiating the renaming broadcasts its former state to others
+    \item Others can then use this data to rename identically their state
+    \item Others may have concurrently inserted identifiers in their state, will explain in \autoref{sec:dealing-with-concurrent-updates} how to handle them
+\end{itemize}
+
+
+Since the size of identifiers and the number of blocks are not bounded, broadcasting this operation may end up quite bandwidth consuming.
+To partially adress this issue, we propose a compression mechanism which sends only the necessary components to identify uniquely a block instead of whole identifiers.
+This compression mechanism allows to reduce to a fixed amount per block the metadata to broadcast.
+
+As stated previously, nodes can issue operations without any coordination.
 However, the designed \emph{rename} operation is not intrinsically commutative.
-Additional steps are thus needed to handle scenarios with concurrent \emph{rename} operations are issued.
+Additional steps are thus needed to handle scenarios with concurrent \emph{rename} operations.
 For the sake of simplicity and brevity, we focus in this paper only on scenarios without any concurrent ones.
-We leave the presentation of the mentioned additional steps to a future work.
+We leave the presentation and evaluation of mentioned additional steps to a future work.
 
 \subsection{Dealing with concurrent updates}
 
@@ -202,7 +217,7 @@ Upon the reception of an operation, nodes compare their current epoch to the ope
 If they differ, nodes have to transform the operation before applying it.
 
 To transform an operation, nodes use the algorithm described in \autoref{alg:renamePos}.
-This algorithm enables nodes to rename identifiers according to the \emph{rename} operation.
+This algorithm enables nodes to transform identifiers against the \emph{rename} operation.
 The main idea of this algorithm is to use the predecessor of the given identifier to do so.
 The algorithm consists mainly in
 \begin{enumerate*}
@@ -211,6 +226,13 @@ The algorithm consists mainly in
     \item prepending it to the given id to generate the renamed id.
 \end{enumerate*}
 An example of its usage is illustrated in \autoref{fig:concurrent-insert-rename-fixed}.
+
+Nodes applying remote \emph{rename} operations use the same algorithm to rename identifiers from their state which do not appear in the propagated state, \ie identifiers which has been inserted concurrently to the renaming.
+
+Since nodes rely on the former state to transform concurrent operations to a \emph{rename} operation to preserve their semantics, nodes has to store it.
+Nodes need it until each of them can not longer issue concurrent operations to the corresponding \emph{rename} operation.
+In other words, nodes can safely garbage collect the former state once the \emph{rename} operation became causally stable.
+Meanwhile, nodes can offload it onto the disk as it is only required to handle concurrent operations.
 
 \begin{algorithm}
     \caption{Rename position}
@@ -224,10 +246,7 @@ An example of its usage is illustrated in \autoref{fig:concurrent-insert-rename-
         \State $newFirstPos \gets new \ P(newPriority, newId, newSeq, 0)$
         \State $newLastPos \gets new \ P(newPriority, newId, newSeq, length)$\\
 
-        \If{$hasBeenRenamed(pos, renamedBlocks)$}
-            \State $index \gets findIndex(pos, renamedBlocks)$
-            \State \Return $new \ P(newPriority, newId, newSeq, index)$
-        \ElsIf{$firstPos < pos$ \textbf{and} $pos < lastPos$}
+        \If{$firstPos < pos$ \textbf{and} $pos < lastPos$}
             \State $predecessor \gets findPredecessor(pos, renamedBlocks)$
             \State $indexOfPredecessor \gets findIndex(predecessor, renamedBlocks)$
             \State $newPredecessor \gets new \ P(newPriority, newId, newSeq, indexOfPredecessor)$
@@ -244,24 +263,6 @@ An example of its usage is illustrated in \autoref{fig:concurrent-insert-rename-
     \end{algorithmic}
 \end{algorithm}
 
-\subsection{Downsides}
-
-The proposed approach presents several drawbacks.
-
-The first one concerns the former state.
-As illustrated in \autoref{sec:dealing-with-concurrent-updates}, nodes has to transform concurrent operations to a \emph{rename} operation against it to preserve their semantics.
-To do so, nodes rely on the former state.
-Nodes has thus to store the former state until each of them can not longer issue concurrent operations to the corresponding \emph{rename} operation.
-In other words, nodes can safely garbage collect the former state once the \emph{rename} operation became causally stable.
-Meanwhile, nodes can offload it onto the disk as it is only used when dealing with concurrent operations.
-
-The other issue regards the bandwidth consumption.
-As nodes rely on the former state to compute the renamed one and to handle concurrent operations, it is necessary to propagate it.
-The node issuing the \emph{rename} operation has thus to broadcast it to other nodes.
-As the size of identifiers and the number of blocks are not bounded, broadcasting this operation may end up quite bandwidth consuming.
-To partially adress this issue, we propose a compression mechanism which sends only the necessary components to identify uniquely a block instead of whole identifiers.
-This compression mechanism allows to reduce to a fixed amount per block the metadata to broadcast.
-
 \section{Evaluation}
 
 \subsection{Simulations and benchmarks}
@@ -269,9 +270,9 @@ This compression mechanism allows to reduce to a fixed amount per block the meta
 To validate the proposed renaming mechanism, we performed an experimental evaluation to measure its performances on several aspects:
 \begin{enumerate*}
     \item the size of the data structure
-    \item the integration time of the \emph{rename} operation
     \item the integration time of \emph{insert} and \emph{remove} operations.
-\end{enumerate*} In cases 1 and 3, we use LogootSplit as the baseline data structure to compare results.
+    \item the integration time of the \emph{rename} operation
+\end{enumerate*} In cases 1 and 2, we use LogootSplit as the baseline data structure to compare results.
 
 Since we were not able to retrieve an existing dataset of traces of realtime collaborative editing sessions, we ran simulations to generate traces to evaluate our data structure.
 The simulations depict the following scenario: several authors collaborate in order to write an article.
@@ -300,9 +301,11 @@ It performs \emph{rename} operations every 30k operations overall.
 The code of the simulations is available at the following address: \url{https://github.com/coast-team/mute-bot-random/}.
 This repository also contains the code corresponding to the benchmarks described in the next subsections as well as the results computed.
 
+\begin{sloppypar}
 Meanwhile, our implementation of LogootSplit and RenamableLogootSplit are available at \url{https://github.com/coast-team/mute-structs}.
 Both implementations use an AVL Tree, a self-balancing binary search tree, to represent the sequence.
 This data structure enables us to achieve \emph{insert} and \emph{remove} operations in logarithmic time.
+\end{sloppypar}
 
 \subsection{Results}
 
@@ -384,7 +387,7 @@ It is necessary to take this concern into account when designing the strategy us
 \begin{itemize}
     \item Core and Nebula
     \item LSEQ
-    \item Specification and Complexitiy of Collaborative Text Editing
+    \item Specification and Complexity of Collaborative Text Editing
     \item OT
 \end{itemize}
 
