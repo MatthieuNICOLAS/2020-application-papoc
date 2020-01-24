@@ -167,15 +167,13 @@ Its behavior is illustrated in \autoref{fig:renaming} and can be described as fo
 As we assign contiguous identifiers to all elements of the sequence, we can eventually group them into one block as illustrated in \autoref{fig:renaming-final-state}.
 It allows nodes to benefit the most from the block feature and to minimise the overhead of the resulting state.
 
-\begin{itemize}
-    \item Other nodes have to apply the same renaming
-    \item Node initiating the renaming broadcasts its former state to others
-    \item Others can then use this data to rename identically their state
-    \item Others may have concurrently inserted identifiers in their state, will explain in \autoref{sec:dealing-with-concurrent-updates} how to handle them
-\end{itemize}
+In order for the system to eventually converge, other nodes have to rename their state identically.
+To achieve this, the node issuing the \emph{rename} operation broadcasts its former state to others.
+Using the former state, others compute the new identifier of each renamed identifier.
+However, other nodes' states may contain concurrently inserted identifiers.
+We will explain in \autoref{sec:dealing-with-concurrent-updates} how to rename them deterministically.
 
-
-Since the size of identifiers and the number of blocks are not bounded, broadcasting this operation may end up quite bandwidth consuming.
+Broadcasting the \emph{rename} operation embedding the former state may be quite bandwidth consuming since the size of identifiers and the number of blocks are not bounded.
 To partially adress this issue, we propose a compression mechanism which sends only the necessary components to identify uniquely a block instead of whole identifiers.
 This compression mechanism allows to reduce to a fixed amount per block the metadata to broadcast.
 
