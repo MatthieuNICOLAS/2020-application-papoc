@@ -133,6 +133,21 @@ We propose a new Sequence \ac{CRDT} relying on dense identifiers to order elemen
 To address the limitations of LogootSplit, we embed in this data structure a renaming mechanism.
 The purpose of this mechanism is to reassign shorter identifiers to elements to reduce the metadata of the whole sequence.
 
+\subsection{System Model}
+
+The system is composed of a dynamic set of nodes, as nodes join and leave dynamically the collaboration during its lifetime.
+Nodes collaborate to build and maintain a sequence using RenamableLogootSplit.
+Each node owns a copy of the sequence and edit it without any kind of coordination with others.
+
+Nodes communicate through a \ac{P2P} network, which is unreliable.
+Messages can be lost, re-ordered or delivered multiple times.
+The network is also vulnerable to partitions, which split nodes into disjoined subgroups.
+To overcome the failures of the network, nodes rely on a message-passing layer.
+As RenamableLogootSplit is built on top of LogootSplit, it shares the same requirements for the operation delivery.
+This layer is thus used to deliver messages to the application exactly-once.
+The layer also ensures that \emph{remove} operations are delivered after corresponding \emph{insert} operations.
+Nodes use an anti-entropy mechanism to synchronise in a pairwise manner, by detecting and re-exchanging lost operations.
+
 \subsection{\emph{rename} operation}
 
 \emph{RenamableLogootSplit} enables nodes to reduce the overhead of their replica by the means of a new operation : the \emph{rename} operation.
