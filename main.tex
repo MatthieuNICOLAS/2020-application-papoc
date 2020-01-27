@@ -26,8 +26,6 @@
 
 \usepackage{subcaption} % subfigure
 
-\def\algorithmautorefname{Algorithm}
-
 % Commands
 %---------
 \newcommand{\ie}{i.e. }
@@ -40,17 +38,17 @@
 % --------
 \acrodef{ADT}[ADT]{Abstract Data Type}
 \acrodefplural{ADT}[ADTs]{Abstract Data Types}
-
 \acrodef{CRDT}[CRDT]{Conflict-free Replicated Data Type}
 \acrodefplural{CRDT}[CRDTs]{Conflict-free Replicated Data Types}
-
 \acrodef{JIT}[JIT]{Just-In-Time}
-
 \acrodef{OT}[OT]{Operational Transform}
-
 \acrodef{P2P}[P2P]{Peer-to-Peer}
-
 \acrodef{SEC}[SEC]{Strong Eventual Consistency}
+
+% Additional config
+% --------
+\bibliographystyle{unsrtnat}
+\def\algorithmautorefname{Algorithm} % \autoref
 
 \begin{document}
 
@@ -97,16 +95,16 @@ To address this issue, we propose a new CRDT for Sequence which embeds a renamin
 \begin{itemize}
     \item Real-time collaborative text editing
     \item \ac{OT}
-    \item \ac{CRDT}
+    \item \ac{CRDT} \cite{shapiro_2011_crdt}
 \end{itemize}
 
 \section{Background}
 
 To solve conflicts deterministically and ensure the convergence of all nodes, \acp{CRDT} relies on additional metadata.
 In the context of Sequence \acp{CRDT}, two different approaches were proposed, each trying to minimise the overhead introduced.
-The first one affixes constant-sized identifiers to each value in the sequence and uses them to represent the sequence as a linked list.
+The first one \cite{oster:inria-00108523, ROH2011354,briot:hal-01343941} affixes constant-sized identifiers to each value in the sequence and uses them to represent the sequence as a linked list.
 The downside of this approach is an evergrowing overhead, as it needs to keep removed values to deal with potential concurrent updates, effectively turning them into tombstones.
-The second one avoids the need of tombstones by instead attaching densely-ordered identifiers to values.
+The second one \cite{5158449,WeissICDCS09,AndreCollaborateCom2013} avoids the need of tombstones by instead attaching densely-ordered identifiers to values.
 It is then able to order values into the sequence by comparing their respective identifiers.
 However this approach also suffers from an ever-increasing overhead, as the size of such densely-ordered identifiers is variable and grows over time.
 
@@ -124,6 +122,7 @@ In the context of this paper, we focus on the later approach.
 \begin{itemize}
     \item Growth of identifiers
     \item Increasing number of blocks
+    \item Related works: Core and Nebula \cite{letia:hal-01248270,zawirski:hal-01248197} and LSEQ \cite{nedelec_2013_lseq,doi:10.1002/cpe.4108}
 \end{itemize}
 
 \section{Proposed approach}
@@ -244,7 +243,7 @@ Nodes applying remote \emph{rename} operations use the same algorithm to rename 
 
 Since nodes rely on the former state to transform concurrent operations to a \emph{rename} operation to preserve their semantics, nodes has to store it.
 Nodes need it until each of them can not longer issue concurrent operations to the corresponding \emph{rename} operation.
-In other words, nodes can safely garbage collect the former state once the \emph{rename} operation became causally stable.
+In other words, nodes can safely garbage collect the former state once the \emph{rename} operation became causally stable \cite{10.1007/978-3-662-43352-2_11}.
 Meanwhile, nodes can offload it onto the disk as it is only required to handle concurrent operations.
 
 \begin{algorithm}
@@ -395,15 +394,6 @@ However other operations can not be integrated during the processing of \emph{re
 \emph{Rename} operations can thus be perceived as spikes of latency by users and degrade their experience if they are too long to process.
 It is necessary to take this concern into account when designing the strategy used to trigger \emph{rename} operations to avoid such cases.
 
-\section{Related works}
-
-\begin{itemize}
-    \item Core and Nebula
-    \item LSEQ
-    \item Specification and Complexity of Collaborative Text Editing
-    \item OT
-\end{itemize}
-
 \section{Conclusions and future work}
 
 \begin{itemize}
@@ -415,5 +405,7 @@ It is necessary to take this concern into account when designing the strategy us
     \item Design strategies to limit likelyhood of concurrent \emph{rename} operations
     \item Design strategies to limit overall workload in case of concurrent \emph{rename} operations
 \end{itemize}
+
+\bibliography{ref}
 
 \end{document}

@@ -1,55 +1,5 @@
-
-@inproceedings{brewer_2000_podc,
- author = {Brewer, Eric A.},
- title = {Towards Robust Distributed Systems},
- booktitle = {Proceedings of the Nineteenth Annual ACM Symposium on Principles of Distributed Computing},
- series = {PODC '00},
- year = {2000},
- isbn = {1-58113-183-6},
- location = {Portland, Oregon, USA},
- pages = {7--},
- url = {http://doi.acm.org/10.1145/343477.343502},
- doi = {10.1145/343477.343502},
- acmid = {343502},
- publisher = {ACM},
- address = {New York, NY, USA},
-}
-
-@article{saito_2005_optimistic-replication,
- author = {Saito, Yasushi and Shapiro, Marc},
- title = {Optimistic Replication},
- journal = {ACM Comput. Surv.},
- issue_date = {March 2005},
- volume = {37},
- number = {1},
- month = mar,
- year = {2005},
- issn = {0360-0300},
- pages = {42--81},
- numpages = {40},
- url = {http://doi.acm.org/10.1145/1057977.1057980},
- doi = {10.1145/1057977.1057980},
- acmid = {1057980},
- publisher = {ACM},
- address = {New York, NY, USA},
- keywords = {Replication, disconnected operation, distributed systems, large scale systems, optimistic techniques},
-}
-
-
-@techreport{leia:inria-00397981,
-  title = {{CRDTs: Consistency without concurrency control}},
-  author = {Leția, Mihai and Pregui{\c c}a, Nuno and Shapiro, Marc},
-  url = {https://hal.inria.fr/inria-00397981},
-  type = {Research Report},
-  number = {RR-6956},
-  pages = {16},
-  institution = {{INRIA}},
-  year = {2009},
-  keywordw = {commutative replicated data type ; replicated data ; consistency ; weak consistency ; eventual consistency},
-  pdf = {https://hal.inria.fr/inria-00397981/file/RR-6956.pdf},
-  HAL_ID = {inria-00397981},
-  HAL_VERSION = {v1},
-}
+% CRDTs
+% --------
 
 @inproceedings{shapiro_2011_crdt,
   title = {Conflict-Free Replicated Data Types},
@@ -64,77 +14,39 @@
   year = {2011}
 }
 
-@inproceedings{nedelec_2013_lseq,
-  title = {{LSEQ:} an adaptive structure for sequences in distributed collaborative editing},
-  author = {Nédelec, Brice and
-           Molli, Pascal and
-           Mostéfaoui, Achour and
-           Desmontils, Emmanuel},
-  doi = {10.1145/2494266.2494278},
-  booktitle = {Proceedings of the 2013 {ACM} Symposium on Document Engineering},
-  series = {DocEng 2013},
-  pages = {37--46},
-  month = sep,
-  year = {2013}
-}
+% Fixed size sequence CRDTs
+% --------
 
-@inproceedings{AndreCollaborateCom2013,
-  author    = {Luc André and Stéphane Martin and Gérald Oster and Claudia-Lavinia Ignat},
-  title     = {Supporting Adaptable Granularity of Changes for Massive-Scale Collaborative Editing},
-  booktitle = {International Conference on Collaborative Computing: Networking, Applications and Worksharing - CollaborateCom 2013},
-  year      = 2013,
-  pages     = {50--59},
-  month     = oct,
-  publisher = {IEEE Computer Society},
-  address   = {Austin, TX, USA},
-  doi       = {10.4108/icst.collaboratecom.2013.254123},
-}
-
-@inproceedings{WeissICDCS09,
-  author    = {St\'ephane Weiss and Pascal Urso and Pascal Molli},
-  title     = {Logoot : A Scalable Optimistic Replication Algorithm for Collaborative Editing on {P2P} Networks},
-  booktitle = {Proceedings of the 29th International Conference on Distributed Computing Systems - ICDCS 2009},
-  issn      = {1063-6927},
-  year      = 2009,
-  month     = jun,
-  pages     = {404--412},
-  doi       = {10.1109/ICDCS.2009.75},
-  url       = {http://doi.ieeecomputersociety.org/10.1109/ICDCS.2009.75},
-  address   = {Montreal, QC, Canada},
-  publisher = {IEEE Computer Society},
-}
-
-@techreport{shapiro:inria-00177693,
-  TITLE = {{Designing a commutative replicated data type}},
-  AUTHOR = {Shapiro, Marc and Pregui{\c c}a, Nuno},
-  URL = {https://hal.inria.fr/inria-00177693},
-  TYPE = {Research Report},
-  NUMBER = {RR-6320},
-  INSTITUTION = {{INRIA}},
-  YEAR = {2007},
-  KEYWORDS = {Data replication ; optimistic replication ; commutative operations},
-  PDF = {https://hal.inria.fr/inria-00177693/file/RR-6320.pdf},
-  HAL_ID = {inria-00177693},
-  HAL_VERSION = {v2},
-}
-
-@inproceedings{nicolas:hal-01655438,
-  TITLE = {{MUTE: A Peer-to-Peer Web-based Real-time Collaborative Editor}},
-  AUTHOR = {Nicolas, Matthieu and Elvinger, VIctorien and Oster, G{\'e}rald and Ignat, Claudia-Lavinia and Charoy, Fran{\c c}ois},
-  URL = {https://hal.inria.fr/hal-01655438},
-  BOOKTITLE = {{ECSCW 2017 - 15th European Conference on Computer-Supported Cooperative Work}},
-  ADDRESS = {Sheffield, United Kingdom},
-  PUBLISHER = {{EUSSET}},
-  SERIES = {Proceedings of 15th European Conference on Computer-Supported Cooperative Work - Panels, Posters and Demos},
-  VOLUME = {1},
-  NUMBER = {3},
-  PAGES = {1-4},
-  YEAR = {2017},
-  MONTH = Aug,
-  DOI = {10.18420/ecscw2017\_p5},
-  PDF = {https://hal.inria.fr/hal-01655438/file/Nicolasetal2017.pdf},
-  HAL_ID = {hal-01655438},
+@inproceedings{oster:inria-00108523,
+  TITLE = {{Data Consistency for P2P Collaborative Editing}},
+  AUTHOR = {Oster, G{\'e}rald and Urso, Pascal and Molli, Pascal and Imine, Abdessamad},
+  URL = {https://hal.inria.fr/inria-00108523},
+  NOTE = {http://portal.acm.org/},
+  BOOKTITLE = {{ACM Conference on Computer-Supported Cooperative Work - CSCW 2006}},
+  ADDRESS = {Banff, Alberta, Canada},
+  PUBLISHER = {{ACM Press}},
+  SERIES = {Proceedings of the 2006 20th anniversary conference on Computer supported cooperative work},
+  PAGES = {259 - 268},
+  YEAR = {2006},
+  MONTH = Nov,
+  KEYWORDS = {CSCW ; Collaborative Editing ; Optimistic Replication ; Concurrency Control},
+  PDF = {https://hal.inria.fr/inria-00108523/file/OsterCSCW06.pdf},
+  HAL_ID = {inria-00108523},
   HAL_VERSION = {v1},
+}
+
+@article{ROH2011354,
+  title = "Replicated abstract data types: Building blocks for collaborative applications",
+  journal = "Journal of Parallel and Distributed Computing",
+  volume = "71",
+  number = "3",
+  pages = "354 - 368",
+  year = "2011",
+  issn = "0743-7315",
+  doi = "https://doi.org/10.1016/j.jpdc.2010.12.006",
+  url = "http://www.sciencedirect.com/science/article/pii/S0743731510002716",
+  author = "Hyun-Gul Roh and Myeongjae Jeon and Jin-Soo Kim and Joonwon Lee",
+  keywords = "Distributed data structures, Optimistic replication, Replicated abstract data types, Optimistic algorithm, Collaboration",
 }
 
 @inproceedings{briot:hal-01343941,
@@ -152,20 +64,21 @@
   HAL_VERSION = {v1},
 }
 
-@techreport{shapiro:inria-00555588,
-  TITLE = {{A comprehensive study of Convergent and Commutative Replicated Data Types}},
-  AUTHOR = {Shapiro, Marc and Pregui{\c c}a, Nuno and Baquero, Carlos and Zawirski, Marek},
-  URL = {https://hal.inria.fr/inria-00555588},
-  TYPE = {Research Report},
-  NUMBER = {RR-7506},
-  PAGES = {50},
-  INSTITUTION = {{Inria -- Centre Paris-Rocquencourt ; INRIA}},
-  YEAR = {2011},
-  MONTH = Jan,
-  KEYWORDS = {eventual consistency ; optimistic replication ; replicated data types ; distributed algorithms ; distributed systems ; Data replication ; commutative operations},
-  PDF = {https://hal.inria.fr/inria-00555588/file/techreport.pdf},
-  HAL_ID = {inria-00555588},
-  HAL_VERSION = {v1},
+% Variable size sequence CRDTs
+% --------
+
+@INPROCEEDINGS{5158449,
+  author={N. {Preguica} and J. M. {Marques} and M. {Shapiro} and M. {Letia}},
+  booktitle={2009 29th IEEE International Conference on Distributed Computing Systems},
+  title={A Commutative Replicated Data Type for Cooperative Editing},
+  year={2009},
+  volume={},
+  number={},
+  pages={395-403},
+  keywords={concurrency control;groupware;storage management;text editing;trees (mathematics);commutative replicated data type;concurrent operations;Treedoc;cooperative text editing;identifier space;extended binary tree;metadata storage;tree compacting;Binary trees;Concurrency control;History;Convergence;Concurrent computing;Compaction;Distributed computing;Delay;Automatic control;Writing;commutative replicated data type;distributed algorithms;replicated data;co-operative editing;dense identifier space},
+  doi={10.1109/ICDCS.2009.20},
+  ISSN={1063-6927},
+  month={June},
 }
 
 @inproceedings{letia:hal-01248270,
@@ -188,32 +101,88 @@
   HAL_VERSION = {v1},
 }
 
+@inproceedings{WeissICDCS09,
+  author    = {St\'ephane Weiss and Pascal Urso and Pascal Molli},
+  title     = {Logoot : A Scalable Optimistic Replication Algorithm for Collaborative Editing on {P2P} Networks},
+  booktitle = {Proceedings of the 29th International Conference on Distributed Computing Systems - ICDCS 2009},
+  issn      = {1063-6927},
+  year      = 2009,
+  month     = jun,
+  pages     = {404--412},
+  doi       = {10.1109/ICDCS.2009.75},
+  url       = {http://doi.ieeecomputersociety.org/10.1109/ICDCS.2009.75},
+  address   = {Montreal, QC, Canada},
+  publisher = {IEEE Computer Society},
+}
+
+@inproceedings{zawirski:hal-01248197,
+  TITLE = {{Asynchronous rebalancing of a replicated tree}},
+  AUTHOR = {Zawirski, Marek and Shapiro, Marc and Pregui{\c c}a, Nuno},
+  URL = {https://hal.inria.fr/hal-01248197},
+  BOOKTITLE = {{Conf{\'e}rence Fran{\c c}aise en Syst{\`e}mes d'Exploitation (CFSE)}},
+  ADDRESS = {Saint-Malo, France},
+  PAGES = {12},
+  YEAR = {2011},
+  MONTH = May,
+  PDF = {https://hal.inria.fr/hal-01248197/file/Asynch%2520rebalancing%2520of%2520a%2520replicated%2520tree%2520Zawirski-CFSE-2011.pdf},
+  HAL_ID = {hal-01248197},
+  HAL_VERSION = {v1},
+}
+
+@inproceedings{AndreCollaborateCom2013,
+  author    = {Luc André and Stéphane Martin and Gérald Oster and Claudia-Lavinia Ignat},
+  title     = {Supporting Adaptable Granularity of Changes for Massive-Scale Collaborative Editing},
+  booktitle = {International Conference on Collaborative Computing: Networking, Applications and Worksharing - CollaborateCom 2013},
+  year      = 2013,
+  pages     = {50--59},
+  month     = oct,
+  publisher = {IEEE Computer Society},
+  address   = {Austin, TX, USA},
+  doi       = {10.4108/icst.collaboratecom.2013.254123},
+}
+
+@inproceedings{nedelec_2013_lseq,
+  title = {{LSEQ:} an adaptive structure for sequences in distributed collaborative editing},
+  author = {Nédelec, Brice and
+           Molli, Pascal and
+           Mostéfaoui, Achour and
+           Desmontils, Emmanuel},
+  doi = {10.1145/2494266.2494278},
+  booktitle = {Proceedings of the 2013 {ACM} Symposium on Document Engineering},
+  series = {DocEng 2013},
+  pages = {37--46},
+  month = sep,
+  year = {2013}
+}
+
+@article{doi:10.1002/cpe.4108,
+author = {Nédelec, Brice and Molli, Pascal and Mostéfaoui, Achour},
+title = {A scalable sequence encoding for collaborative editing},
+journal = {Concurrency and Computation: Practice and Experience},
+
+volume = {n/a},
+number = {n/a},
+pages = {e4108},
+keywords = {real-time collaborative editing, optimistic replication, replicated sequences},
+doi = {10.1002/cpe.4108},
+url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/cpe.4108},
+eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/cpe.4108},
+note = {e4108 cpe.4108},
+}
+
+% Miscellaneous
+% --------
+
 @InProceedings{10.1007/978-3-662-43352-2_11,
-author="Baquero, Carlos
-and Almeida, Paulo S{\'e}rgio
-and Shoker, Ali",
-editor="Magoutis, Kostas
-and Pietzuch, Peter",
-title="Making Operation-Based CRDTs Operation-Based",
-booktitle="Distributed Applications and Interoperable Systems",
-year="2014",
-publisher="Springer Berlin Heidelberg",
-address="Berlin, Heidelberg",
-pages="126--140"
+  author="Baquero, Carlos
+  and Almeida, Paulo S{\'e}rgio
+  and Shoker, Ali",
+  editor="Magoutis, Kostas
+  and Pietzuch, Peter",
+  title="Making Operation-Based CRDTs Operation-Based",
+  booktitle="Distributed Applications and Interoperable Systems",
+  year="2014",
+  publisher="Springer Berlin Heidelberg",
+  address="Berlin, Heidelberg",
+  pages="126--140"
 }
-
-@article{DBLP:journals/corr/abs-1901-01930,
-  author    = {Joseph M. Hellerstein and
-               Peter Alvaro},
-  title     = {Keeping {CALM:} When Distributed Consistency is Easy},
-  journal   = {CoRR},
-  volume    = {abs/1901.01930},
-  year      = {2019},
-  url       = {http://arxiv.org/abs/1901.01930},
-  archivePrefix = {arXiv},
-  eprint    = {1901.01930},
-  timestamp = {Thu, 31 Jan 2019 13:52:49 +0100},
-  biburl    = {https://dblp.org/rec/bib/journals/corr/abs-1901-01930},
-  bibsource = {dblp computer science bibliography, https://dblp.org}
-}
-
