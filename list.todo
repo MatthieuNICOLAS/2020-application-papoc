@@ -1,0 +1,18 @@
+Introduction:
+    ☐ Trouver des références appropriées pour OT
+    ☐ Voir pour faire référence à Local-first software (https://dl.acm.org/doi/abs/10.1145/3359591.3359737) dans l'introduction
+
+Background:
+    ✔ Ajouter figures sur représentation d'une séquence avec LogootSplit (sans puis avec bloc) @done (1/28/2020, 2:45:23 PM)
+    ☐ Ajouter figure illustrant la croissance des identifiants (exemple d'un split)
+    ☐ Refaire figures avec formalisme indiqué dans le papier
+    ☐ Ajouter figure sur le contenu ne représentant que 1% de la structure de donnée
+    ☐ Trouver référence sur un OT partiel (système avec plusieurs opés où seulement besoin de transformer par rapport 1 opération, contraintes moins fortes)
+
+Proposed approach:
+    ☐ Refaire figures avec formalisme indiqué dans le papier
+    ☐ Ajouter quelques lignes sur le fait que les opérations doivent être livrées de manière causale par rapport au précédent rename (epoch-based delivery)
+
+Evaluation:
+
+Conclusion:
