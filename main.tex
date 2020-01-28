@@ -32,7 +32,10 @@
 
 \newcommand{\inbb}[1]{\in \mathbb{#1}}
 \newcommand{\mathlist}[2]{\set{#1_i \in #2}_{i \inbb{N}}}
+\newcommand{\trm}[1]{\mathrm{#1}}
 \newcommand{\set}[1]{\left\{#1\right\}} % set brace notation
+
+\newcommand{\id}[4]{$\trm{#1}^{\trm{#2}, \trm{#3}}_{\trm{#4}}$}
 
 % Acronyms
 % --------
@@ -102,20 +105,56 @@ To address this issue, we propose a new CRDT for Sequence which embeds a renamin
 
 To solve conflicts deterministically and ensure the convergence of all nodes, \acp{CRDT} relies on additional metadata.
 In the context of Sequence \acp{CRDT}, two different approaches were proposed, each trying to minimise the overhead introduced.
-The first one \cite{oster:inria-00108523, ROH2011354,briot:hal-01343941} affixes constant-sized identifiers to each value in the sequence and uses them to represent the sequence as a linked list.
-The downside of this approach is an evergrowing overhead, as it needs to keep removed values to deal with potential concurrent updates, effectively turning them into tombstones.
-The second one \cite{5158449,WeissICDCS09,AndreCollaborateCom2013} avoids the need of tombstones by instead attaching densely-ordered identifiers to values.
-It is then able to order values into the sequence by comparing their respective identifiers.
-However this approach also suffers from an ever-increasing overhead, as the size of such densely-ordered identifiers is variable and grows over time.
+The first one \cite{oster:inria-00108523, ROH2011354,briot:hal-01343941} attaches fixed size identifiers to each element in the sequence and uses them to represent the sequence as a linked list.
+The downside of this approach is an ever growing overhead, as it needs to keep removed elements to deal with potential concurrent updates, effectively turning them into tombstones.
+The second one \cite{5158449,WeissICDCS09,AndreCollaborateCom2013} avoids the need of tombstones by instead attaching identifiers from a dense totally ordered set to elements.
+It is then able to order elements into the sequence by comparing their respective identifiers.
+However this approach also suffers from an ever-increasing overhead, as the size of such dense totally ordered identifiers is variable and grows over time.
 
 In the context of this paper, we focus on the later approach.
 
 \subsection{LogootSplit}
 
-\begin{itemize}
-    \item Attach dense identifiers to elements
-    \item Group elements with adjacent identifiers into blocks to reduce overhead
-\end{itemize}
+Proposed by \citet{AndreCollaborateCom2013}, LogootSplit is the state of the art of the variable size identifiers approach of Sequence \ac{CRDT}.
+As explained previously, it uses identifiers from a dense totally ordered set to position elements into the replicated sequence.
+
+To this end, LogootSplit attaches identifiers made of a list of tuples to elements.
+These tuples has four components:
+\begin{enumerate*}
+    \item the \emph{priority}, which embodies the intended position of the element
+    \item the \emph{node identifier},
+    \item the \emph{node sequence number} and
+    \item the \emph{offset}, which are combined to make identifiers unique.
+\end{enumerate*}
+By comparing identifiers using the lexicographical order, LogootSplit is able to determine of the element's position relatively to others.
+In this paper, we represent identifiers using the following notation : \id{priority}{node~id}{node~seq}{offset} where $\trm{priority}$ is a lowercase letter, $\trm{node~id}$ an uppercase one and both $\trm{node~seq}$ and $\trm{offset}$ integers.
+
+Instead of storing an identifier for each element of the sequence, the main insight of LogootSplit is to aggregate dynamically elements into blocks.
+Grouping elements into blocks enables LogootSplit to assign logically an identifier to each element while effectively storing only the block's length and first element's identifier.
+LogootSplit gathers into a block elements with \emph{contiguous} identifiers.
+We call \emph{contiguous} two identifiers which are identical but for their last offset, and with the first one’s offset being the predecessor of the second one's.
+\autoref{fig:logootsplit-seq} illustrates such a case : in \autoref{fig:logootsplit-seq-as-letters}, the elements' identifiers form a chain of contiguous identifiers.
+LogootSplit is then able to group them into one block to minimise the metadata stored, as shown in \autoref{fig:logootsplit-seq-as-block}.
+
+\begin{figure}
+    \begin{subfigure}{0.45\columnwidth}
+        \centering
+        \includegraphics[width=0.4\columnwidth]{img/helo-as-letters.png}
+        \caption{Elements with their corresponding identifiers}
+        \label{fig:logootsplit-seq-as-letters}
+    \end{subfigure}
+    \begin{subfigure}{0.45\columnwidth}
+        \centering
+        \includegraphics[width=0.4\columnwidth]{img/helo-as-block.png}
+        \caption{Elements grouped into a block}
+        \label{fig:logootsplit-seq-as-block}
+    \end{subfigure}
+    \caption{Representation of a LogootSplit sequence containing the elements "helo"}
+    \label{fig:logootsplit-seq}
+\end{figure}
+
+This feature allows to shift the cause of metadata growth from the number of elements to the number of blocks.
+As blocks can contain an arbitrary number of elements, it enables to reduce significantly the memory overhead of the data structure.
 
 \subsection{Limits}
 
@@ -127,10 +166,10 @@ In the context of this paper, we focus on the later approach.
 
 \section{Proposed approach}
 
-We propose a new Sequence \ac{CRDT} relying on dense identifiers to order elements : \emph{RenamableLogootSplit}.
+We propose a new Sequence \ac{CRDT} belonging to the variable size identifiers approach : \emph{RenamableLogootSplit}.
 
 To address the limitations of LogootSplit, we embed in this data structure a renaming mechanism.
-The purpose of this mechanism is to reassign shorter identifiers to elements to reduce the metadata of the whole sequence.
+The purpose of this mechanism is to reassign shorter identifiers to elements and to regroup them into blocks to minimise the memory overhead of the whole sequence.
 
 \subsection{System Model}
 
@@ -153,18 +192,20 @@ Nodes use an anti-entropy mechanism to synchronise in a pairwise manner, by dete
 This operation reassigns arbitrary identifiers to elements.
 
 \begin{figure}
-    \centering
     \begin{subfigure}{\columnwidth}
+        \centering
         \includegraphics[width=0.9\columnwidth]{img/renaming-first-id.png}
         \caption{Selecting the new identifier of the first element}
         \label{fig:renaming-first-id}
     \end{subfigure}
     \begin{subfigure}{\columnwidth}
+        \centering
         \includegraphics[width=0.9\columnwidth]{img/renaming-second-id.png}
         \caption{Selecting the new identifier of the second one}
         \label{fig:renaming-second-id}
     \end{subfigure}
     \begin{subfigure}{\columnwidth}
+        \centering
         \includegraphics[width=0.9\columnwidth]{img/renaming-final-state.png}
         \caption{Final state obtained}
         \label{fig:renaming-final-state}
@@ -206,13 +247,14 @@ Since identifiers are modified by the \emph{renaming} mechanism, applying concur
 It is thus necessary to handle concurrent operations to \emph{rename} operations in a particular manner.
 
 \begin{figure}
-    \centering
     \begin{subfigure}{\columnwidth}
+        \centering
         \includegraphics[width=0.9\columnwidth]{img/concurrent-insert-rename-inconsistent.png}
         \caption{Concurrent update leading to inconsistency}
         \label{fig:concurrent-insert-rename-inconsistent}
     \end{subfigure}
     \begin{subfigure}{\columnwidth}
+        \centering
         \includegraphics[width=0.9\columnwidth]{img/concurrent-insert-rename-fixed.png}
         \caption{Fixed scenario}
         \label{fig:concurrent-insert-rename-fixed}
@@ -353,13 +395,14 @@ We set up benchmarks to measure the impact of the renaming mechanism on the inte
 The obtained results are presented in \autoref{fig:evolution-integration-time-insert-remove}.
 
 \begin{figure}
-    \centering
     \begin{subfigure}{\columnwidth}
+        \centering
         \includegraphics[width=0.9\columnwidth]{img/integration-time-boxplot-local-operations-without-outliers.pdf}
         \caption{Local operations}
         \label{fig:evolution-integration-time-local-insert-remove}
     \end{subfigure}
     \begin{subfigure}{\columnwidth}
+        \centering
         \includegraphics[width=0.9\columnwidth]{img/integration-time-boxplot-remote-operations-without-outliers.pdf}
         \caption{Remote operations}
         \label{fig:evolution-integration-time-remote-insert-remove}
