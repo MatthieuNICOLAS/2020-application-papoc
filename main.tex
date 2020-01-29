@@ -130,7 +130,7 @@ By comparing identifiers using the lexicographical order, LogootSplit is able to
 In this paper, we represent identifiers using the following notation : \id{priority}{node~id}{node~seq}{offset} where $\trm{priority}$ is a lowercase letter, $\trm{node~id}$ an uppercase one and both $\trm{node~seq}$ and $\trm{offset}$ integers.
 
 Instead of storing an identifier for each element of the sequence, the main insight of LogootSplit is to aggregate dynamically elements into blocks.
-Grouping elements into blocks enables LogootSplit to assign logically an identifier to each element while effectively storing only the block's length and first element's identifier.
+Grouping elements into blocks enables LogootSplit to assign logically an identifier to each element while effectively storing only the block's length and its first element's identifier.
 LogootSplit gathers into a block elements with \emph{contiguous} identifiers.
 We call \emph{contiguous} two identifiers which are identical but for their last offset, and with the first one’s offset being the predecessor of the second one's.
 \autoref{fig:logootsplit-seq} illustrates such a case : in \autoref{fig:logootsplit-seq-as-letters}, the elements' identifiers form a chain of contiguous identifiers.
@@ -164,6 +164,22 @@ As blocks can contain an arbitrary number of elements, it enables to reduce sign
     \item Related works: Core and Nebula \cite{letia:hal-01248270,zawirski:hal-01248197} and LSEQ \cite{nedelec_2013_lseq,doi:10.1002/cpe.4108}
 \end{itemize}
 
+As stated previously, the size of identifiers from a dense totally ordered set is variable to be able to represent the intended order between elements.
+When nodes insert new elements between two others with the same \emph{priority} value, LogootSplit has no other option than to increase the size of the resulting identifiers.
+\autoref{fig:example-split} illustrates such cases.
+In this example, since the node inserts a new element between contiguous identifiers, LogootSplit is not able to generate a fitting identifier of the same size. To comply with the intended order, LogootSplit generates the new identifier by appending to the predecessor's one a new tuple.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6\columnwidth]{img/insert-between.png}
+    \caption{Insertion leading to longer identifiers}
+    \label{fig:example-split}
+\end{figure}
+
+As a result, the size of identifiers tends to grow as the collaboration progresses.
+This growth impacts negatively the performances of the data structure on several aspects.
+Since identifiers attached to values become longer, the memory overhead of the data structure increases accordingly.
+This also increases the bandwidth consumption as nodes have to broadcast identifiers to others.
 \section{Proposed approach}
 
 We propose a new Sequence \ac{CRDT} belonging to the variable size identifiers approach : \emph{RenamableLogootSplit}.
