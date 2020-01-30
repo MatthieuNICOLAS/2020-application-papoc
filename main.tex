@@ -175,6 +175,24 @@ This growth impacts negatively the performances of the data structure on several
 Since identifiers attached to values become longer, the memory overhead of the data structure increases accordingly.
 This also increases the bandwidth consumption as nodes have to broadcast identifiers to others.
 
+Additionally, as the lifetime of the replicated sequence increases, the number of blocks composing it grows as well.
+Indeed, several constraints on identifier generation prevent nodes from adding new elements to existing blocks.
+For example, only the block's author can append or prepend elements to it.
+These limitations cause the generation of new blocks.
+Since no mechanism to merge blocks a posteriori is provided, the sequence ends up fragmented into many blocks.
+The efficiency of the data structure decreases as each block introduces its own overhead.
+
+In our benchmark, we measure that these issues eventually lead to the content representing a fraction of the whole data structure's size, less than 1\%, as shown in \autoref{fig:overhead-size}. It is thus necessary to address them.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.55\columnwidth]{img/overhead-size.pdf}
+    \caption{Footprint of the data structure}
+    \label{fig:overhead-size}
+\end{figure}
+
+\subsection{Related works}
+
 Over the years, several works were presented to reduce the growth of variable-size identifiers.
 
 In \cite{letia:hal-01248270,zawirski:hal-01248197}, authors design for Treedoc a renaming mechanism to reassign shorter identifiers to elements.
