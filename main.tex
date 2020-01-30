@@ -188,10 +188,16 @@ Since consensus algorithms are costly in large-scale distributed systems with ch
 Nodes are splitted between the \emph{core}, a set of stable and highly connected nodes, and the \emph{nebula} made of the remaining ones.
 Only members of the \emph{core} participate in the consensus leading to renaming whereas every node can update the sequence.
 However the \emph{core-nebula} approach is not suited to all kinds of applications.
-In fully distributed systems, no central authority exists to provide a set of stable nodes acting as the \emph{core}.
+In fully distributed systems, there is no central authority to provide the set of stable nodes acting as the \emph{core}.
+
+In \cite{nedelec_2013_lseq,doi:10.1002/cpe.4108}, authors introduce another approach to limit the growth of identifiers : \emph{LSEQ}.
+Its insight consists in using several strategies to select the \emph{priority} value of a new tuple.
+These strategies prevent nodes from quickly saturating the space between two existing identifiers and having to increase the size of new ones.
+Although the \emph{LSEQ} approach has been designed for \emph{Logoot}, it can also be applied to \emph{LogootSplit}.
+However, its impact would be diminished as insertions into blocks result in new identifiers with increased sizes nonetheless.
 \section{Proposed approach}
 
-We propose a new Sequence \ac{CRDT} belonging to the variable size identifiers approach : \emph{RenamableLogootSplit}.
+We propose a new Sequence \ac{CRDT} belonging to the variable-size identifiers approach : \emph{RenamableLogootSplit}.
 
 To address the limitations of LogootSplit, we embed in this data structure a renaming mechanism.
 The purpose of this mechanism is to reassign shorter identifiers to elements and to regroup them into blocks to minimise the memory overhead of the whole sequence.
