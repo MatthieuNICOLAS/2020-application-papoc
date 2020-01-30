@@ -6,10 +6,12 @@ Background:
     ✔ Ajouter figures sur représentation d'une séquence avec LogootSplit (sans puis avec bloc) @done (1/28/2020, 2:45:23 PM)
     ✔ Ajouter figure illustrant la croissance des identifiants (exemple d'un split) @done (1/29/2020, 10:34:28 AM)
     ☐ Refaire figures avec formalisme indiqué dans le papier
-    ☐ Ajouter figure sur le contenu ne représentant que 1% de la structure de donnée
+    ✔ Ajouter figure sur le contenu ne représentant que 1% de la structure de donnée @done (1/30/2020, 5:29:03 PM)
     ☐ Trouver référence sur un OT partiel (système avec plusieurs opés où seulement besoin de transformer par rapport 1 opération, contraintes moins fortes)
+    ☐ Ajouter une phrase expliquant que, to the best of our knowledge, il n'y a pas eu de travaux pour améliorer les blocs dans LS
 
 Proposed approach:
+    ☐ Ajouter quelques phrases pour indiquer notre but de présenter la contribution
     ☐ Refaire figures avec formalisme indiqué dans le papier
     ☐ Ajouter quelques lignes sur le fait que les opérations doivent être livrées de manière causale par rapport au précédent rename (epoch-based delivery)
     ☐ Ajouter référence pour le mécanisme d'anti-entropie
