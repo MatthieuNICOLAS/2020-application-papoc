@@ -158,13 +158,7 @@ As blocks can contain an arbitrary number of elements, it enables to reduce sign
 
 \subsection{Limits}
 
-\begin{itemize}
-    \item Growth of identifiers
-    \item Increasing number of blocks
-    \item Related works: Core and Nebula \cite{letia:hal-01248270,zawirski:hal-01248197} and LSEQ \cite{nedelec_2013_lseq,doi:10.1002/cpe.4108}
-\end{itemize}
-
-As stated previously, the size of identifiers from a dense totally ordered set is variable to be able to represent the intended order between elements.
+As stated previously, the size of identifiers from a dense totally ordered set is variable.
 When nodes insert new elements between two others with the same \emph{priority} value, LogootSplit has no other option than to increase the size of the resulting identifiers.
 \autoref{fig:example-split} illustrates such cases.
 In this example, since the node inserts a new element between contiguous identifiers, LogootSplit is not able to generate a fitting identifier of the same size. To comply with the intended order, LogootSplit generates the new identifier by appending to the predecessor's one a new tuple.
@@ -181,7 +175,8 @@ This growth impacts negatively the performances of the data structure on several
 Since identifiers attached to values become longer, the memory overhead of the data structure increases accordingly.
 This also increases the bandwidth consumption as nodes have to broadcast identifiers to others.
 
-Over the years, several works were presented to address this problem of the variable-size identifiers approach.
+Over the years, several works were presented to reduce the growth of variable-size identifiers.
+
 In \cite{letia:hal-01248270,zawirski:hal-01248197}, authors design for Treedoc a renaming mechanism to reassign shorter identifiers to elements.
 Nodes rely on a consensus mechanism to trigger the renaming and a catch-up protocol to handle concurrent updates.
 Since consensus algorithms are costly in large-scale distributed systems with churn, \citet{letia:hal-01248270} introduce a two-tier architecture.
@@ -190,12 +185,13 @@ Every node can update the sequence but only members of the \emph{core} participa
 However the \emph{core-nebula} approach is not suited to all kinds of applications.
 In fully distributed systems, there is no central authority to provide the set of stable nodes acting as the \emph{core}.
 
-In \cite{nedelec_2013_lseq,doi:10.1002/cpe.4108}, \citeauthor{nedelec_2013_lseq} introduce another approach to address the identifiers growth issue : \emph{LSEQ}.
+In \cite{nedelec_2013_lseq,doi:10.1002/cpe.4108}, \citeauthor{nedelec_2013_lseq} introduce another approach to address the identifiers growth issue : LSEQ.
 Its insight consists in using several strategies to select the \emph{priority} value of a new tuple.
 These strategies prevent nodes from quickly saturating the space between two existing identifiers.
 This approach enables to reduce the growth of identifiers.
-Although the \emph{LSEQ} approach has been designed for \emph{Logoot}, it can also be applied to \emph{LogootSplit}.
+And although the LSEQ approach has been designed for Logoot, it can also be applied to LogootSplit.
 However, its impact would be diminished as insertions into blocks result in new identifiers with increased sizes nonetheless.
+
 \section{Proposed approach}
 
 We propose a new Sequence \ac{CRDT} belonging to the variable-size identifiers approach : \emph{RenamableLogootSplit}.
