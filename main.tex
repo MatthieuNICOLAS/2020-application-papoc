@@ -186,13 +186,14 @@ In \cite{letia:hal-01248270,zawirski:hal-01248197}, authors design for Treedoc a
 Nodes rely on a consensus mechanism to trigger the renaming and a catch-up protocol to handle concurrent updates.
 Since consensus algorithms are costly in large-scale distributed systems with churn, \citet{letia:hal-01248270} introduce a two-tier architecture.
 Nodes are splitted between the \emph{core}, a set of stable and highly connected nodes, and the \emph{nebula} made of the remaining ones.
-Only members of the \emph{core} participate in the consensus leading to renaming whereas every node can update the sequence.
+Every node can update the sequence but only members of the \emph{core} participate in the consensus leading to renaming.
 However the \emph{core-nebula} approach is not suited to all kinds of applications.
 In fully distributed systems, there is no central authority to provide the set of stable nodes acting as the \emph{core}.
 
-In \cite{nedelec_2013_lseq,doi:10.1002/cpe.4108}, authors introduce another approach to limit the growth of identifiers : \emph{LSEQ}.
+In \cite{nedelec_2013_lseq,doi:10.1002/cpe.4108}, \citeauthor{nedelec_2013_lseq} introduce another approach to address the identifiers growth issue : \emph{LSEQ}.
 Its insight consists in using several strategies to select the \emph{priority} value of a new tuple.
-These strategies prevent nodes from quickly saturating the space between two existing identifiers and having to increase the size of new ones.
+These strategies prevent nodes from quickly saturating the space between two existing identifiers.
+This approach enables to reduce the growth of identifiers.
 Although the \emph{LSEQ} approach has been designed for \emph{Logoot}, it can also be applied to \emph{LogootSplit}.
 However, its impact would be diminished as insertions into blocks result in new identifiers with increased sizes nonetheless.
 \section{Proposed approach}
