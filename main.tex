@@ -103,7 +103,7 @@ To address this issue, we propose a new CRDT for Sequence which embeds a renamin
 
 \section{Background}
 
-To solve conflicts deterministically and ensure the convergence of all nodes, \acp{CRDT} relies on additional metadata.
+To solve conflicts deterministically and ensure the convergence of all nodes, \acp{CRDT} relies on metadata.
 In the context of Sequence \acp{CRDT}, two different approaches were proposed, each trying to minimise the overhead introduced.
 The first one \cite{oster:inria-00108523, ROH2011354,briot:hal-01343941} attaches fixed size identifiers to each element in the sequence and uses them to represent the sequence as a linked list.
 The downside of this approach is an ever growing overhead, as it needs to keep removed elements to deal with potential concurrent updates, effectively turning them into tombstones.
@@ -119,7 +119,7 @@ Proposed by \citet{AndreCollaborateCom2013}, LogootSplit is the state of the art
 As explained previously, it uses identifiers from a dense totally ordered set to position elements into the replicated sequence.
 
 To this end, LogootSplit attaches identifiers made of a list of tuples to elements.
-These tuples has four components:
+These tuples have four components:
 \begin{enumerate*}
     \item the \emph{priority}, which embodies the intended position of the element
     \item the \emph{node identifier},
