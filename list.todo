@@ -15,6 +15,7 @@ Proposed approach:
     ☐ Refaire figures avec formalisme indiqué dans le papier
     ☐ Ajouter quelques lignes sur le fait que les opérations doivent être livrées de manière causale par rapport au précédent rename (epoch-based delivery)
     ☐ Ajouter référence pour le mécanisme d'anti-entropie
+    ☐ Ajouter référence pour les algorithmes de consensus coûteux et qui ne scalent pas
 
 Evaluation:
 

@@ -284,7 +284,7 @@ However, other nodes' states may contain concurrently inserted identifiers.
 We will explain in \autoref{sec:dealing-with-concurrent-updates} how to rename them deterministically.
 
 Broadcasting the \emph{rename} operation embedding the former state may be quite bandwidth consuming since the size of identifiers and the number of blocks are not bounded.
-To partially adress this issue, we propose a compression mechanism which sends only the necessary components to identify uniquely a block instead of whole identifiers.
+To partially address this issue, we propose a compression mechanism which sends only the necessary components to identify uniquely a block instead of whole identifiers.
 This compression mechanism allows to reduce to a fixed amount per block the metadata to broadcast.
 
 \subsection{Dealing with concurrent updates}
@@ -330,10 +330,10 @@ The algorithm consists mainly in
 \end{enumerate*}
 An example of its usage is illustrated in \autoref{fig:concurrent-insert-rename-fixed}.
 
-Nodes applying remote \emph{rename} operations use the same algorithm to rename identifiers from their state which do not appear in the propagated state, \ie identifiers which has been inserted concurrently to the renaming.
+Nodes use the same algorithm to rename identifiers they inserted concurrently when applying remote \emph{rename} operations.
 
-Since nodes rely on the former state to transform concurrent operations to a \emph{rename} operation to preserve their semantics, nodes has to store it.
-Nodes need it until each of them can not longer issue concurrent operations to the corresponding \emph{rename} operation.
+Since nodes rely on the former state to transform concurrent operations to a \emph{rename} one, they have to store it.
+Nodes need it until each of them can no longer issue concurrent operations to the corresponding \emph{rename} operation.
 In other words, nodes can safely garbage collect the former state once the \emph{rename} operation became causally stable \cite{10.1007/978-3-662-43352-2_11}.
 Meanwhile, nodes can offload it onto the disk as it is only required to handle concurrent operations.
 
@@ -378,12 +378,14 @@ To validate the proposed renaming mechanism, we performed an experimental evalua
 \end{enumerate*}
 In cases 1 and 2, we use LogootSplit as the baseline data structure to compare results.
 
+% TODO: Reformuler cette phrase
 Since we were not able to retrieve an existing dataset of traces of realtime collaborative editing sessions, we ran simulations to generate traces to evaluate our data structure.
-The simulations depict the following scenario: several authors collaborate in order to write an article.
+The simulations depict the following scenario: several authors collaboratively write an article.
 Initially, they prioritise adding content as everything remains to be done.
 Thus they mainly insert elements into the document during this first phase.
 A few \emph{remove} operations are still issued to simulate spelling mistakes.
-Once the document approaches the critical length, the collaborators switch to the second phase.
+Once the document reaches the critical length, collaborators switch to the second phase.
+% TODO: Peut-être retravailler le "adding new content"
 From this point, they stop adding new content and focus on revamping existing parts instead.
 This is simulated by balancing the ratio between \emph{insert} and \emph{remove} operations.
 Each author has to perform a given number of operations and the collaboration ends once all of them received all operations.
@@ -394,8 +396,9 @@ Each container corresponds to a single mono-threaded Node.js process (version 13
 The bots share and edit collaboratively the document using either LogootSplit or RenamableLogootSplit according to the session.
 In both cases, each bot performs an \emph{insert} or a \emph{remove} operation locally every 200 $\pm$ 50ms.
 During the first phase, the probabilities for each operation of being an \emph{insert} or a \emph{remove} are respectively of 80\% and 20\%.
+% TODO: Glisser le terme "phase 2"
 Once the document reaches 60k characters (around 15 pages), the probabilities are both set to 50\%.
-The generated operation is then broadcast to others using a \ac{P2P} full mesh network.
+Generated operations are broadcast to other nodes using a \ac{P2P} full mesh network.
 After issuing an operation, there are 5\% of chances that the bot moves its cursor to another position in the document.
 Each bot performs 15k operations.
 Snapshots are taken every 10k operations overall.
@@ -407,7 +410,7 @@ This repository also contains the code corresponding to the benchmarks described
 
 \begin{sloppypar}
 Meanwhile, our implementation of LogootSplit and RenamableLogootSplit are available at \url{https://github.com/coast-team/mute-structs}.
-Both implementations use an AVL Tree, a self-balancing binary search tree, to represent the sequence.
+Both implementations represent the sequence using an AVL Tree, a self-balancing binary search tree.
 This data structure enables us to achieve \emph{insert} and \emph{remove} operations in logarithmic time.
 \end{sloppypar}
 
@@ -415,8 +418,8 @@ This data structure enables us to achieve \emph{insert} and \emph{remove} operat
 
 \paragraph{Memory overhead}
 
-Using the snapshots generated, we compare the evolution of the size of the data structure in collaborative editing session.
-The results are displayed in \autoref{fig:evolution-document-size}.
+Using the snapshots generated, we compare the evolution of the size of the data structure in collaborative editing sessions.
+\autoref{fig:evolution-document-size} presents the results.
 On this plot, the blue line corresponds to the size of the content while the red one exhibits the growth of the LogootSplit data structure.
 
 \begin{figure}
