@@ -338,27 +338,27 @@ In other words, nodes can safely garbage collect the former state once the \emph
 Meanwhile, nodes can offload it onto the disk as it is only required to handle concurrent operations.
 
 \begin{algorithm}
-    \caption{Rename identifier}
+    \caption{Rename identifier concurrently generated}
     \label{alg:renameId}
     \begin{algorithmic}
-    \Function{renameId}{$\trm{id}, \trm{nodeId}, \trm{nodeSeq}, \trm{renamedBlocks}$}
+    \Function{renameId}{$\trm{id}, \trm{nId}, \trm{nSeq}, \trm{renamedBlocks}$}
         \State $\trm{length} \gets \trm{renamedBlocks.length}$
         \State $\trm{firstId} \gets \trm{idBegin}(\trm{renamedBlocks}[0])$
         \State $\trm{lastId} \gets \trm{idEnd}(\trm{renamedBlocks}[\trm{length} - 1])$\\
 
-        \State $\trm{newPrior} \gets \trm{priority(firstId)}$
-        \State $\trm{newFirstId} \gets \trm{new} \ \trm{Id}(\trm{newPrior}, \trm{newId}, \trm{newSeq}, 0)$
-        \State $\trm{newLastId} \gets \trm{new} \ \trm{Id}(\trm{newPrior}, \trm{newId}, \trm{newSeq}, \trm{length})$\\
+        \State $\trm{prior} \gets \trm{priority(firstId)}$
+        \State $\trm{newFirstId} \gets \trm{new} \ \trm{Id}(\trm{prior}, \trm{nId}, \trm{nSeq}, 0)$
+        \State $\trm{newLastId} \gets \trm{new} \ \trm{Id}(\trm{prior}, \trm{nId}, \trm{nSeq}, \trm{length - 1})$\\
 
         \If{$\trm{firstId} < \trm{id}$ \textbf{and} $\trm{id} < \trm{lastId}$}
             \State $\trm{pred} \gets \trm{findPredecessor}(\trm{id}, \trm{renamedBlocks})$
             \State $\trm{indexOfPred} \gets \trm{findIndex}(\trm{pred}, \trm{renamedBlocks})$
-            \State $\trm{newPred} \gets \trm{new} \ \trm{Id}(\trm{newPrior}, \trm{nodeId}, \trm{nodeSeq}, \trm{indexOfPred})$
+            \State $\trm{newPred} \gets \trm{new} \ \trm{Id}(\trm{prior}, \trm{nId}, \trm{nSeq}, \trm{indexOfPred})$
             \State \Return $\trm{concat}(\trm{newPredecessor}, \trm{id})$
         \ElsIf{$\trm{lastId} < \trm{id}$ \textbf{and} $\trm{id} < \trm{newLastId}$}
             \State \Return $\trm{concat}(\trm{newLastId}, \trm{id})$
         \ElsIf{$\trm{newFirstId} < \trm{id}$ \textbf{and} $\trm{id} < \trm{firstId}$}
-            \State $\trm{predOfNewFirstId} \gets \trm{new} \ \trm{Id}(\trm{newPrior}, \trm{nodeId}, \trm{nodeSeq}, -1)$
+            \State $\trm{predOfNewFirstId} \gets \trm{new} \ \trm{Id}(\trm{prior}, \trm{nId}, \trm{nSeq}, -1)$
             \State \Return $\trm{concat}(\trm{predOfNewFirstId}, \trm{id})$
         \Else
             \State \Return $\trm{id}$ \Comment Return the identifier unchanged as it does not interfere with the renaming
