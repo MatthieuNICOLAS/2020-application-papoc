@@ -32,7 +32,7 @@
 
 \newcommand{\inbb}[1]{\in \mathbb{#1}}
 \newcommand{\mathlist}[2]{\set{#1_i \in #2}_{i \inbb{N}}}
-\newcommand{\trm}[1]{\mathrm{#1}}
+\newcommand{\trm}[1]{\mathit{#1}}
 \newcommand{\set}[1]{\left\{#1\right\}} % set brace notation
 
 \newcommand{\id}[4]{$\trm{#1}^{\trm{#2}, \trm{#3}}_{\trm{#4}}$}
@@ -319,7 +319,7 @@ When nodes issue operation, they tag them with their current epoch.
 Upon the reception of an operation, nodes compare their current epoch to the operation's one.
 If they differ, nodes have to transform the operation before applying it.
 
-To transform an operation, nodes use the algorithm described in \autoref{alg:renamePos}.
+To transform an operation, nodes use the algorithm described in \autoref{alg:renameId}.
 This algorithm enables nodes to transform identifiers against the \emph{rename} operation.
 The main idea of this algorithm is to use the predecessor of the given identifier to do so.
 The algorithm consists mainly in
@@ -338,29 +338,30 @@ In other words, nodes can safely garbage collect the former state once the \emph
 Meanwhile, nodes can offload it onto the disk as it is only required to handle concurrent operations.
 
 \begin{algorithm}
-    \caption{Rename position}
-    \label{alg:renamePos}
+    \caption{Rename identifier}
+    \label{alg:renameId}
     \begin{algorithmic}
-    \Function{renamePos}{$pos: P, newId: \mathbb{I}, newSeq: \mathbb{N}, renamedBlocks: \mathlist{b}{B}$}{: $P$}
-        \State $firstPos \gets posBegin(renamedBlocks[0])$
-        \State $lastPos \gets posEnd(renamedBlocks[renamedBlocks.length - 1]$\\
+    \Function{renameId}{$\trm{id}, \trm{nodeId}, \trm{nodeSeq}, \trm{renamedBlocks}$}
+        \State $\trm{length} \gets \trm{renamedBlocks.length}$
+        \State $\trm{firstId} \gets \trm{idBegin}(\trm{renamedBlocks}[0])$
+        \State $\trm{lastId} \gets \trm{idEnd}(\trm{renamedBlocks}[\trm{length} - 1])$\\
 
-        \State $newPriority \gets priority(firstPos)$
-        \State $newFirstPos \gets new \ P(newPriority, newId, newSeq, 0)$
-        \State $newLastPos \gets new \ P(newPriority, newId, newSeq, length)$\\
+        \State $\trm{newPrior} \gets \trm{priority(firstId)}$
+        \State $\trm{newFirstId} \gets \trm{new} \ \trm{Id}(\trm{newPrior}, \trm{newId}, \trm{newSeq}, 0)$
+        \State $\trm{newLastId} \gets \trm{new} \ \trm{Id}(\trm{newPrior}, \trm{newId}, \trm{newSeq}, \trm{length})$\\
 
-        \If{$firstPos < pos$ \textbf{and} $pos < lastPos$}
-            \State $predecessor \gets findPredecessor(pos, renamedBlocks)$
-            \State $indexOfPredecessor \gets findIndex(predecessor, renamedBlocks)$
-            \State $newPredecessor \gets new \ P(newPriority, newId, newSeq, indexOfPredecessor)$
-            \State \Return $concat(newPredecessor, pos)$
-        \ElsIf{$lastPos < pos$ \textbf{and} $pos < newLastPos$}
-            \State \Return $concat(newLastPos, pos)$
-        \ElsIf{$newFirstPos < pos$ \textbf{and} $pos < firstPos$}
-            \State $predecessorOfNewFirstPos \gets new \ P(newPriority, newId, newSeq, -1)$
-            \State \Return $concat(predecessorOfNewFirstPos, pos)$
+        \If{$\trm{firstId} < \trm{id}$ \textbf{and} $\trm{id} < \trm{lastId}$}
+            \State $\trm{pred} \gets \trm{findPredecessor}(\trm{id}, \trm{renamedBlocks})$
+            \State $\trm{indexOfPred} \gets \trm{findIndex}(\trm{pred}, \trm{renamedBlocks})$
+            \State $\trm{newPred} \gets \trm{new} \ \trm{Id}(\trm{newPrior}, \trm{nodeId}, \trm{nodeSeq}, \trm{indexOfPred})$
+            \State \Return $\trm{concat}(\trm{newPredecessor}, \trm{id})$
+        \ElsIf{$\trm{lastId} < \trm{id}$ \textbf{and} $\trm{id} < \trm{newLastId}$}
+            \State \Return $\trm{concat}(\trm{newLastId}, \trm{id})$
+        \ElsIf{$\trm{newFirstId} < \trm{id}$ \textbf{and} $\trm{id} < \trm{firstId}$}
+            \State $\trm{predOfNewFirstId} \gets \trm{new} \ \trm{Id}(\trm{newPrior}, \trm{nodeId}, \trm{nodeSeq}, -1)$
+            \State \Return $\trm{concat}(\trm{predOfNewFirstId}, \trm{id})$
         \Else
-            \State \Return $pos$ \Comment Return the position unchanged as it does not interfere with the renaming
+            \State \Return $\trm{id}$ \Comment Return the identifier unchanged as it does not interfere with the renaming
         \EndIf
     \EndFunction
     \end{algorithmic}
@@ -432,10 +433,10 @@ On this plot, the blue line corresponds to the size of the content while the red
 The green line illustrates the growth of the RenamableLogootSplit document in its best-case scenario.
 In this scenario, \emph{rename} operations become stable as soon as they are issued.
 Former states can then be garbage collected safely, maximising the benefits of the \emph{renaming} mechanism.
-In this case, we observe that \emph{rename} operations reset the overhead of the data structure and eventually reduce by hundred times the document size compared to LogootSplit equivalent one.
+In this case, we observe that \emph{rename} operations reset the overhead of the data structure and eventually reduce by hundred times the document size compared to LogootSplit.
 
 As for the orange line, it represents RenamableLogootSplit worst-case scenario.
-Here, we assume that \emph{rename} operations never become stable and that nodes have to store former states forever.
+Here, we assume that \emph{rename} operations never become causally stable and that nodes have to store former states forever.
 However, obtained results show that RenamableLogootSplit outperforms LogootSplit and reduce by 66\% the size of the data structure, even in this case.
 This outcome is explained by the fact that the AVL does not only store the content and blocks corresponding to the sequence.
 Some metadata is actually added to the state to browse the sequence more efficiently when performing updates.
@@ -444,8 +445,10 @@ Other metadata is scrapped, which results in this memory gain.
 
 \paragraph{Integration times of standard operations}
 
+\begin{sloppypar}
 We set up benchmarks to measure the impact of the renaming mechanism on the integration times of \emph{insert} and \emph{remove} operations.
 The obtained results are presented in \autoref{fig:evolution-integration-time-insert-remove}.
+\end{sloppypar}
 
 \begin{figure}
     \begin{subfigure}{\columnwidth}
