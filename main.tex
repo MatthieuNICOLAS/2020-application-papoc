@@ -196,7 +196,7 @@ In our benchmark, we measure that these issues eventually lead to the content re
 Over the years, several works were presented to reduce the growth of variable-size identifiers.
 However, to the best of our knowledge, no works have been presented to decrease the number of blocks generated.
 
-In \cite{letia:hal-01248270,zawirski:hal-01248197}, authors design for Treedoc a renaming mechanism to reassign shorter identifiers to elements.
+In \cite{letia:hal-01248270,zawirski:hal-01248197}, authors design for Treedoc \cite{5158449} a renaming mechanism to reassign shorter identifiers to elements.
 Nodes rely on a consensus mechanism to trigger the renaming and a catch-up protocol to handle concurrent updates.
 Since consensus algorithms are costly in large-scale distributed systems with churn, \citet{letia:hal-01248270} introduce a two-tier architecture.
 Nodes are splitted between the \emph{core}, a set of stable and highly connected nodes, and the \emph{nebula} made of the remaining ones.
@@ -208,7 +208,7 @@ In \cite{nedelec_2013_lseq,doi:10.1002/cpe.4108}, \citeauthor{nedelec_2013_lseq}
 Its insight consists in using several strategies to select the \emph{priority} value of a new tuple.
 These strategies prevent nodes from quickly saturating the space between two existing identifiers.
 This approach enables to reduce the growth of identifiers.
-And although the LSEQ approach has been designed for Logoot, it can also be applied to LogootSplit.
+And although the LSEQ approach has been designed for Logoot \cite{WeissICDCS09}, it can also be applied to LogootSplit.
 However, its impact would be diminished as insertions into blocks result in new identifiers with increased sizes nonetheless.
 
 \section{Proposed approach}
@@ -386,7 +386,7 @@ A few \emph{remove} operations are still issued to simulate spelling mistakes.
 Once the document approaches the critical length, the collaborators switch to the second phase.
 From this point, they stop adding new content and focus on revamping existing parts instead.
 This is simulated by balancing the ratio between \emph{insert} and \emph{remove} operations.
-Each author has to perform a given number of operations and the collaboration ends once every all of them received all operations.
+Each author has to perform a given number of operations and the collaboration ends once all of them received all operations.
 We take snapshots of the document at given steps of the collaboration to follow the evolution of the document.
 
 We ran these simulations with the following experimental settings : we deployed 10 bots as separate Docker containers on a single workstation.
@@ -432,7 +432,7 @@ Former states can then be garbage collected safely, maximising the benefits of t
 In this case, we observe that \emph{rename} operations reset the overhead of the data structure and eventually reduce by hundred times the document size compared to LogootSplit equivalent one.
 
 As for the orange line, it represents RenamableLogootSplit worst-case scenario.
-Here, we assume that \emph{rename} operations never become stable and that nodes has to store former states forever.
+Here, we assume that \emph{rename} operations never become stable and that nodes have to store former states forever.
 However, obtained results show that RenamableLogootSplit outperforms LogootSplit and reduce by 66\% the size of the data structure, even in this case.
 This outcome is explained by the fact that the AVL does not only store the content and blocks corresponding to the sequence.
 Some metadata is actually added to the state to browse the sequence more efficiently when performing updates.
