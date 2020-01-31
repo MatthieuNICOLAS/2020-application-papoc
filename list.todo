@@ -8,10 +8,10 @@ Background:
     ☐ Refaire figures avec formalisme indiqué dans le papier
     ✔ Ajouter figure sur le contenu ne représentant que 1% de la structure de donnée @done (1/30/2020, 5:29:03 PM)
     ☐ Trouver référence sur un OT partiel (système avec plusieurs opés où seulement besoin de transformer par rapport 1 opération, contraintes moins fortes)
-    ☐ Ajouter une phrase expliquant que, to the best of our knowledge, il n'y a pas eu de travaux pour améliorer les blocs dans LS
+    ✔ Ajouter une phrase expliquant que, to the best of our knowledge, il n'y a pas eu de travaux pour améliorer les blocs dans LS @done (1/31/2020, 9:40:17 AM)
 
 Proposed approach:
-    ☐ Ajouter quelques phrases pour indiquer notre but de présenter la contribution
+    ✔ Ajouter quelques phrases pour indiquer notre but avant de présenter la contribution @done (1/31/2020, 11:05:38 AM)
     ☐ Refaire figures avec formalisme indiqué dans le papier
     ☐ Ajouter quelques lignes sur le fait que les opérations doivent être livrées de manière causale par rapport au précédent rename (epoch-based delivery)
     ☐ Ajouter référence pour le mécanisme d'anti-entropie

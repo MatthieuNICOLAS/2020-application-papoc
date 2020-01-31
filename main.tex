@@ -194,6 +194,7 @@ In our benchmark, we measure that these issues eventually lead to the content re
 \subsection{Related works}
 
 Over the years, several works were presented to reduce the growth of variable-size identifiers.
+However, to the best of our knowledge, no works have been presented to decrease the number of blocks generated.
 
 In \cite{letia:hal-01248270,zawirski:hal-01248197}, authors design for Treedoc a renaming mechanism to reassign shorter identifiers to elements.
 Nodes rely on a consensus mechanism to trigger the renaming and a catch-up protocol to handle concurrent updates.
@@ -216,6 +217,14 @@ We propose a new Sequence \ac{CRDT} belonging to the variable-size identifiers a
 
 To address the limitations of LogootSplit, we embed in this data structure a renaming mechanism.
 The purpose of this mechanism is to reassign shorter identifiers to elements and to regroup them into blocks to minimise the memory overhead of the whole sequence.
+
+To avoid costly and not scalable consensus algorithms, we instead adopt the optimistic replication approach for this mechanism.
+Nodes perform renaming without any coordination.
+However, this operation is not intrinsically commutative with others.
+If conflicts arise, we use operational transformations to enable nodes to resolve them deterministically.
+While transforming \emph{insert} and \emph{remove} operations against \emph{rename} one is straightforward, dealing with concurrent \emph{rename} operations is more tedious.
+For the sake of simplicity and brevity, we focus in this paper only on the first case.
+We leave the presentation and evaluation of required additional steps to handle the concurrent \emph{rename} operations to a future work.
 
 \subsection{System Model}
 
@@ -277,12 +286,6 @@ We will explain in \autoref{sec:dealing-with-concurrent-updates} how to rename t
 Broadcasting the \emph{rename} operation embedding the former state may be quite bandwidth consuming since the size of identifiers and the number of blocks are not bounded.
 To partially adress this issue, we propose a compression mechanism which sends only the necessary components to identify uniquely a block instead of whole identifiers.
 This compression mechanism allows to reduce to a fixed amount per block the metadata to broadcast.
-
-As stated previously, nodes can issue operations without any coordination.
-However, the designed \emph{rename} operation is not intrinsically commutative.
-Additional steps are thus needed to handle scenarios with concurrent \emph{rename} operations.
-For the sake of simplicity and brevity, we focus in this paper only on scenarios without any concurrent ones.
-We leave the presentation and evaluation of mentioned additional steps to a future work.
 
 \subsection{Dealing with concurrent updates}
 
@@ -370,9 +373,10 @@ Meanwhile, nodes can offload it onto the disk as it is only required to handle c
 To validate the proposed renaming mechanism, we performed an experimental evaluation to measure its performances on several aspects:
 \begin{enumerate*}
     \item the size of the data structure
-    \item the integration time of \emph{insert} and \emph{remove} operations.
-    \item the integration time of the \emph{rename} operation
-\end{enumerate*} In cases 1 and 2, we use LogootSplit as the baseline data structure to compare results.
+    \item the integration time of \emph{insert} and \emph{remove} operations
+    \item the integration time of the \emph{rename} operation.
+\end{enumerate*}
+In cases 1 and 2, we use LogootSplit as the baseline data structure to compare results.
 
 Since we were not able to retrieve an existing dataset of traces of realtime collaborative editing sessions, we ran simulations to generate traces to evaluate our data structure.
 The simulations depict the following scenario: several authors collaborate in order to write an article.
