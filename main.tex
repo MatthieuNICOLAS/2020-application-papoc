@@ -218,13 +218,13 @@ We propose a new Sequence \ac{CRDT} belonging to the variable-size identifiers a
 To address the limitations of LogootSplit, we embed in this data structure a renaming mechanism.
 The purpose of this mechanism is to reassign shorter identifiers to elements and to regroup them into blocks to minimise the memory overhead of the whole sequence.
 
-To avoid costly and not scalable consensus algorithms, we instead adopt the optimistic replication approach for this mechanism.
+To avoid costly and blocking consensus algorithms, we instead adopt the \emph{optimistic replication} approach for this mechanism.
 Nodes perform renaming without any coordination.
 However, this operation is not intrinsically commutative with others.
-If conflicts arise, we use operational transformations to enable nodes to resolve them deterministically.
+If conflicts arise, we use \emph{operational transformations} to enable nodes to resolve them deterministically.
 While transforming \emph{insert} and \emph{remove} operations against \emph{rename} one is straightforward, dealing with concurrent \emph{rename} operations is more tedious.
 For the sake of simplicity and brevity, we focus in this paper only on the first case.
-We leave the presentation and evaluation of required additional steps to handle the concurrent \emph{rename} operations to a future work.
+We leave the presentation and evaluation of required additional steps to handle concurrent \emph{rename} operations to a future work.
 
 \subsection{System Model}
 
@@ -380,7 +380,7 @@ To validate the proposed renaming mechanism, we performed an experimental evalua
 In cases 1 and 2, we use LogootSplit as the baseline data structure to compare results.
 
 % TODO: Reformuler cette phrase
-Since we were not able to retrieve an existing dataset of traces of realtime collaborative editing sessions, we ran simulations to generate traces to evaluate our data structure.
+Since we were not able to retrieve an existing dataset of traces of real-time collaborative editing sessions, we ran simulations to generate traces to evaluate our data structure.
 The simulations depict the following scenario: several authors collaboratively write an article.
 Initially, they prioritise adding content as everything remains to be done.
 Thus they mainly insert elements into the document during this first phase.
@@ -495,15 +495,22 @@ It is necessary to take this concern into account when designing the strategy us
 
 \section{Conclusions and future work}
 
-\begin{itemize}
-    \item Designed new dense identifier-based Sequence CRDT embedding a renaming mechanism : \emph{RenamableLogootSplit}
-    \item Achieved better performances memory-wise than state of the art, even in worst-case scenario...
-    \item ... at the cost of expensive but infrequent \emph{rename} operations
-    \item Study user behavior to set a limit to integration time of \emph{rename} operations
-    \item Present and validate mechanism to handle concurrent \emph{rename} operations
-    \item Design strategies to limit likelyhood of concurrent \emph{rename} operations
-    \item Design strategies to limit overall workload in case of concurrent \emph{rename} operations
-\end{itemize}
+In this paper, we introduced a novel Sequence \ac{CRDT} belonging to the variable-size identifiers approach : RenamableLogootSplit.
+This new data structure embeds into its specification a renaming mechanism.
+It enables nodes to reassign shorter identifiers to elements and group them into one block to minimise the metadata.
+
+Obtained results experiments shown that RenamableLogootSplit reduces the overhead of the data structure by hundreds times compared to LogootSplit in the best-case scenario.
+They also exhibited that it outperforms LogootSplit even in the worst-case one.
+However, this comes at the price of an expensive but infrequent operation : the \emph{rename} operation.
+
+As explained previously, \emph{rename} operations can be perceived by users as latency spikes if delayed for too long.
+In order to prevent such user experience deterioration, it is necessary to set an upper-bound to their integration time.
+User behaviour studies could be led in the context of real-time collaborative writing to identify this limit.
+
+Finally, we designed RenamableLogootSplit with fully distributed systems in mind.
+However, for the sake of simplicity, we presented it in this paper under the assumption that no concurrent \emph{rename} operations were issued.
+This scenario is actually akin to systems in which nodes synchronise to trigger the renaming mechanism.
+In a future work, we will introduce and evaluate the additional steps required to use RenamableLogootSplit in its original settings.
 
 \bibliography{ref}
 
