@@ -160,13 +160,13 @@ These tuples have four components:
     \item the \emph{offset}, which are combined to make identifiers unique.
 \end{enumerate*}
 By comparing identifiers using the lexicographical order, LogootSplit is able to determine of the element's position relatively to others.
-In this paper, we represent identifiers using the following notation : \id{priority}{node~id}{node~seq}{offset} where $\trm{priority}$ is a lowercase letter, $\trm{node~id}$ an uppercase one and both $\trm{node~seq}$ and $\trm{offset}$ integers.
+In this paper, we represent identifiers using the following notation: \id{priority}{node~id}{node~seq}{offset} where $\trm{priority}$ is a lowercase letter, $\trm{node~id}$ an uppercase one and both $\trm{node~seq}$ and $\trm{offset}$ integers.
 
 Instead of storing an identifier for each element of the sequence, the main insight of LogootSplit is to aggregate dynamically elements into blocks.
 Grouping elements into blocks enables LogootSplit to assign logically an identifier to each element while effectively storing only the block's length and its first element's identifier.
 LogootSplit gathers into a block elements with \emph{contiguous} identifiers.
 We call \emph{contiguous} two identifiers which are identical but for their last offset, and with the first one’s offset being the predecessor of the second one's.
-\autoref{fig:logootsplit-seq} illustrates such a case : in \autoref{fig:logootsplit-seq-as-letters}, the elements' identifiers form a chain of contiguous identifiers.
+\autoref{fig:logootsplit-seq} illustrates such a case: in \autoref{fig:logootsplit-seq-as-letters}, the elements' identifiers form a chain of contiguous identifiers.
 LogootSplit is then able to group them into one block to minimise the metadata stored, as shown in \autoref{fig:logootsplit-seq-as-block}.
 
 \begin{figure}
@@ -237,7 +237,7 @@ Every node can update the sequence but only members of the \emph{core} participa
 However the \emph{core-nebula} approach is not suited to all kinds of applications.
 In fully distributed systems, there is no central authority to provide the set of stable nodes acting as the \emph{core}.
 
-In \cite{nedelec_2013_lseq,doi:10.1002/cpe.4108}, \citeauthor{nedelec_2013_lseq} introduce another approach to address the identifiers growth issue : LSEQ.
+In \cite{nedelec_2013_lseq,doi:10.1002/cpe.4108}, \citeauthor{nedelec_2013_lseq} introduce another approach to address the identifiers growth issue: LSEQ.
 Its insight consists in using several strategies to select the \emph{priority} value of a new tuple.
 These strategies prevent nodes from quickly saturating the space between two existing identifiers.
 This approach enables to reduce the growth of identifiers.
@@ -247,7 +247,7 @@ However, its impact would be diminished as insertions into blocks result in new 
 \section{Proposed approach}
 \label{sec:proposition}
 
-We propose a new Sequence \ac{CRDT} belonging to the variable-size identifiers approach : \emph{RenamableLogootSplit}.
+We propose a new Sequence \ac{CRDT} belonging to the variable-size identifiers approach: \emph{RenamableLogootSplit} \cite{nicolas:hal-01932552}.
 
 To address the limitations of LogootSplit, we embed in this data structure a renaming mechanism.
 The purpose of this mechanism is to reassign shorter identifiers to elements and to regroup them into blocks to minimise the memory overhead of the whole sequence.
@@ -277,7 +277,7 @@ Nodes use an anti-entropy mechanism to synchronise in a pairwise manner, by dete
 
 \subsection{\emph{rename} operation}
 
-\emph{RenamableLogootSplit} enables nodes to reduce the overhead of their replica by the means of a new operation : the \emph{rename} operation.
+\emph{RenamableLogootSplit} enables nodes to reduce the overhead of their replica by the means of a new operation: the \emph{rename} operation.
 This operation reassigns arbitrary identifiers to elements.
 
 \begin{figure}
@@ -303,7 +303,7 @@ This operation reassigns arbitrary identifiers to elements.
     \label{fig:renaming}
 \end{figure}
 
-Its behavior is illustrated in \autoref{fig:renaming} and can be described as follows :
+Its behavior is illustrated in \autoref{fig:renaming} and can be described as follows:
 \begin{enumerate*}
     \item It reuses the id of the first element of the sequence, but modified with the node's own id and sequence number (\autoref{fig:renaming-first-id})
     \item It generates contiguous identifiers for all following elements (\autoref{fig:renaming-second-id}).
@@ -427,7 +427,7 @@ This is simulated by balancing the ratio between \emph{insert} and \emph{remove}
 Each author has to perform a given number of operations and the collaboration ends once all of them received all operations.
 We take snapshots of the document at given steps of the collaboration to follow the evolution of the document.
 
-We ran these simulations with the following experimental settings : we deployed 10 bots as separate Docker containers on a single workstation.
+We ran these simulations with the following experimental settings: we deployed 10 bots as separate Docker containers on a single workstation.
 Each container corresponds to a single mono-threaded Node.js process (version 13.1.0) simulating an author.
 The bots share and edit collaboratively the document using either LogootSplit or RenamableLogootSplit according to the session.
 In both cases, each bot performs an \emph{insert} or a \emph{remove} operation locally every 200 $\pm$ 50ms.
@@ -524,20 +524,20 @@ In this figure, the blue line corresponds to the integration time of a \emph{loc
 \end{figure}
 
 The main result of this benchmark is that the unit of time used when applying \emph{rename} operations is in hundreds of milliseconds.
-However other operations can not be integrated during the processing of \emph{rename} operations : remote operations won't be displayed to the user while local ones won't be propagated to others.
+However other operations can not be integrated during the processing of \emph{rename} operations: remote operations won't be displayed to the user while local ones won't be propagated to others.
 \emph{Rename} operations can thus be perceived as spikes of latency by users and degrade their experience if they are too long to process.
 It is necessary to take this concern into account when designing the strategy used to trigger \emph{rename} operations to avoid such cases.
 
 \section{Conclusions and future work}
 \label{sec:conclusion}
 
-In this paper, we introduced a novel Sequence \ac{CRDT} belonging to the variable-size identifiers approach : RenamableLogootSplit.
+In this paper, we introduced a novel Sequence \ac{CRDT} belonging to the variable-size identifiers approach: RenamableLogootSplit.
 This new data structure embeds into its specification a renaming mechanism.
 It enables nodes to reassign shorter identifiers to elements and group them into one block to minimise the metadata.
 
 Obtained results experiments shown that RenamableLogootSplit reduces the overhead of the data structure by hundreds times compared to LogootSplit in the best-case scenario.
 They also exhibited that it outperforms LogootSplit even in the worst-case one.
-However, this comes at the price of an expensive but infrequent operation : the \emph{rename} operation.
+However, this comes at the price of an expensive but infrequent operation: the \emph{rename} operation.
 
 As explained previously, \emph{rename} operations can be perceived by users as latency spikes if delayed for too long.
 In order to prevent such user experience deterioration, it is necessary to set an upper-bound to their integration time.
