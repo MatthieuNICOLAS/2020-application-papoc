@@ -7,6 +7,7 @@
 \usepackage{algorithm} % \begin{algorithm} \end{algorithm}
 \usepackage{algpseudocode} % \begin{algorithmic} \end{algorithmic}
 \usepackage[inline]{enumitem} % \begin{enumerate*} \end{enumerate*}
+\usepackage{tikz} % \begin{tikzpicture} \end{tikzpicture}
 
 \usepackage{graphicx}
 \usepackage{color}
@@ -36,6 +37,16 @@
 \newcommand{\set}[1]{\left\{#1\right\}} % set brace notation
 
 \newcommand{\id}[4]{$\trm{#1}^{\trm{#2}, \trm{#3}}_{\trm{#4}}$}
+
+\newcommand{\widthletter}{6mm}
+\newcommand{\widthblock}{10mm}
+
+% Tikz styles
+\tikzset{
+    common/.style={anchor=west, draw, rectangle, minimum height=6mm},
+    letter/.style={common, minimum width=6mm},
+    block/.style={common, inner xsep=3mm},
+}
 
 % Acronyms
 % --------
@@ -172,13 +183,22 @@ LogootSplit is then able to group them into one block to minimise the metadata s
 \begin{figure}
     \begin{subfigure}{0.45\columnwidth}
         \centering
-        \includegraphics[width=0.4\columnwidth]{img/helo-as-letters.png}
+        \begin{tikzpicture}
+            \path
+                node[letter, label=below:{\id{i}{A}{0}{0}}] {H}
+                to ++(0:\widthletter) node[letter, label=below:{\id{i}{A}{0}{1}}] {E}
+                to ++(0:\widthletter) node[letter, label=below:{\id{i}{A}{0}{2}}] {L}
+                to ++(0:\widthletter) node[letter, label=below:{\id{i}{A}{0}{3}}] {O};
+        \end{tikzpicture}
         \caption{Elements with their corresponding identifiers}
         \label{fig:logootsplit-seq-as-letters}
     \end{subfigure}
     \begin{subfigure}{0.45\columnwidth}
         \centering
-        \includegraphics[width=0.4\columnwidth]{img/helo-as-block.png}
+        \begin{tikzpicture}
+            \path
+                node[block, label=below:{\id{i}{A}{0}{0..3}}] {HELO};
+        \end{tikzpicture}
         \caption{Elements grouped into a block}
         \label{fig:logootsplit-seq-as-block}
     \end{subfigure}
@@ -198,7 +218,12 @@ In this example, since the node inserts a new element between contiguous identif
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.6\columnwidth]{img/insert-between.png}
+    \begin{tikzpicture}
+        \path
+            node[block, label=below:{\id{i}{A}{0}{0..1}}] {HE}
+            to ++(0:\widthblock) node[letter, fill=orange!30, label=above:{\color{orange!70}\id{i}{A}{0}{1}\id{f}{B}{0}{0}}] {L}
+            to ++(0:\widthletter) node[block, label=below:{\id{i}{A}{0}{2..3}}] {LO};
+    \end{tikzpicture}
     \caption{Insertion leading to longer identifiers}
     \label{fig:example-split}
 \end{figure}
