@@ -3,12 +3,12 @@ Abstract:
 
 Introduction:
     ☐ Trouver des références appropriées pour OT
-    ☐ Voir pour faire référence à Local-first software (https://dl.acm.org/doi/abs/10.1145/3359591.3359737) dans l'introduction
+    ✔ Voir pour faire référence à Local-first software (https://dl.acm.org/doi/abs/10.1145/3359591.3359737) dans l'introduction @done (2/5/2020, 5:10:42 PM)
 
 Background:
     ✔ Ajouter figures sur représentation d'une séquence avec LogootSplit (sans puis avec bloc) @done (1/28/2020, 2:45:23 PM)
     ✔ Ajouter figure illustrant la croissance des identifiants (exemple d'un split) @done (1/29/2020, 10:34:28 AM)
-    ☐ Refaire figures avec formalisme indiqué dans le papier
+    ✔ Refaire figures avec formalisme indiqué dans le papier @done (2/5/2020, 5:09:51 PM)
     ✔ Ajouter figure sur le contenu ne représentant que 1% de la structure de donnée @done (1/30/2020, 5:29:03 PM)
     ☐ Trouver référence sur un OT partiel (système avec plusieurs opés où seulement besoin de transformer par rapport 1 opération, contraintes moins fortes)
     ✔ Ajouter une phrase expliquant que, to the best of our knowledge, il n'y a pas eu de travaux pour améliorer les blocs dans LS @done (1/31/2020, 9:40:17 AM)
