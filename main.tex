@@ -36,16 +36,16 @@
 \newcommand{\trm}[1]{\mathit{#1}}
 \newcommand{\set}[1]{\left\{#1\right\}} % set brace notation
 
-\newcommand{\id}[4]{$\trm{#1}^{\trm{#2}, \trm{#3}}_{\trm{#4}}$}
+\newcommand{\id}[3]{$\trm{#1}^{\trm{#2}}_{\trm{#3}}$}
 
-\newcommand{\widthletter}{6mm}
-\newcommand{\widthblock}{10mm}
+\newcommand{\widthletter}{7mm}
+\newcommand{\widthblock}{11mm}
 
 % Tikz styles
 \tikzset{
     common/.style={anchor=west, draw, rectangle, minimum height=6mm},
-    letter/.style={common, minimum width=6mm},
-    block/.style={common, inner xsep=3mm},
+    letter/.style={common, minimum width=\widthletter},
+    block/.style={common, minimum width=\widthblock},
 }
 
 % Acronyms
@@ -171,7 +171,7 @@ These tuples have four components:
     \item the \emph{offset}, which are combined to make identifiers unique.
 \end{enumerate*}
 By comparing identifiers using the lexicographical order, LogootSplit is able to determine of the element's position relatively to others.
-In this paper, we represent identifiers using the following notation: \id{priority}{node~id}{node~seq}{offset} where $\trm{priority}$ is a lowercase letter, $\trm{node~id}$ an uppercase one and both $\trm{node~seq}$ and $\trm{offset}$ integers.
+In this paper, we represent identifiers using the following notation: \id{priority}{node~id~node~seq}{offset} where $\trm{priority}$ is a lowercase letter, $\trm{node~id}$ an uppercase one and both $\trm{node~seq}$ and $\trm{offset}$ integers.
 
 Instead of storing an identifier for each element of the sequence, the main insight of LogootSplit is to aggregate dynamically elements into blocks.
 Grouping elements into blocks enables LogootSplit to assign logically an identifier to each element while effectively storing only the block's length and its first element's identifier.
@@ -185,10 +185,9 @@ LogootSplit is then able to group them into one block to minimise the metadata s
         \centering
         \begin{tikzpicture}
             \path
-                node[letter, label=below:{\id{i}{A}{0}{0}}] {H}
-                to ++(0:\widthletter) node[letter, label=below:{\id{i}{A}{0}{1}}] {E}
-                to ++(0:\widthletter) node[letter, label=below:{\id{i}{A}{0}{2}}] {L}
-                to ++(0:\widthletter) node[letter, label=below:{\id{i}{A}{0}{3}}] {O};
+                node[letter, label=below:{\id{i}{A0}{0}}] {H}
+                to ++(0:\widthletter) node[letter, label=below:{\id{i}{A0}{1}}] {L}
+                to ++(0:\widthletter) node[letter, label=below:{\id{i}{A0}{2}}] {O};
         \end{tikzpicture}
         \caption{Elements with their corresponding identifiers}
         \label{fig:logootsplit-seq-as-letters}
@@ -197,12 +196,12 @@ LogootSplit is then able to group them into one block to minimise the metadata s
         \centering
         \begin{tikzpicture}
             \path
-                node[block, label=below:{\id{i}{A}{0}{0..3}}] {HELO};
+                node[block, label=below:{\id{i}{A0}{0..2}}] {HLO};
         \end{tikzpicture}
         \caption{Elements grouped into a block}
         \label{fig:logootsplit-seq-as-block}
     \end{subfigure}
-    \caption{Representation of a LogootSplit sequence containing the elements "helo"}
+    \caption{Representation of a LogootSplit sequence containing the elements "hlo"}
     \label{fig:logootsplit-seq}
 \end{figure}
 
@@ -220,9 +219,9 @@ In this example, since the node inserts a new element between contiguous identif
     \centering
     \begin{tikzpicture}
         \path
-            node[block, label=below:{\id{i}{A}{0}{0..1}}] {HE}
-            to ++(0:\widthblock) node[letter, fill=orange!30, label=above:{\color{orange!70}\id{i}{A}{0}{1}\id{f}{B}{0}{0}}] {L}
-            to ++(0:\widthletter) node[block, label=below:{\id{i}{A}{0}{2..3}}] {LO};
+            node[letter, label=below:{\id{i}{A0}{0}}] {H}
+            to ++(0:\widthletter) node[letter, fill=orange!30, label=above:{\color{orange!70}\id{i}{A0}{0}\id{f}{B0}{0}}] {E}
+            to ++(0:\widthletter) node[block, label=below:{\id{i}{A0}{1..2}}] {LO};
     \end{tikzpicture}
     \caption{Insertion leading to longer identifiers}
     \label{fig:example-split}
