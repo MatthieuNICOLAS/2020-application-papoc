@@ -219,9 +219,13 @@ In this example, since the node inserts a new element between contiguous identif
     \centering
     \begin{tikzpicture}
         \path
-            node[letter, label=below:{\id{i}{A0}{0}}] {H}
+            node {\textbf{B}}
+            to ++(0:\widthletter) node[block, label=below:{\id{i}{A0}{0..2}}] (HLO) {HLO}
+            to ++(0:5 * \widthletter) node[letter, label=below:{\id{i}{A0}{0}}] (H) {H}
             to ++(0:\widthletter) node[letter, fill=orange!30, label=above:{\color{orange!70}\id{i}{A0}{0}\id{f}{B0}{0}}] {E}
             to ++(0:\widthletter) node[block, label=below:{\id{i}{A0}{1..2}}] {LO};
+
+        \draw[->, thick] (HLO) -- node[below, align=center]{\emph{insert "e"}\\\emph{between}\\\emph{"h" and "l"}} (H);
     \end{tikzpicture}
     \caption{Insertion leading to longer identifiers}
     \label{fig:example-split}
