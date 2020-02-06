@@ -15,7 +15,7 @@ Background:
 
 Proposed approach:
     ✔ Ajouter quelques phrases pour indiquer notre but avant de présenter la contribution @done (1/31/2020, 11:05:38 AM)
-    ☐ Refaire figures avec formalisme indiqué dans le papier
+    ✔ Refaire figures avec formalisme indiqué dans le papier @done (2/6/2020, 4:57:14 PM)
     ☐ Ajouter quelques lignes sur le fait que les opérations doivent être livrées de manière causale par rapport au précédent rename (epoch-based delivery)
     ☐ Ajouter référence pour le mécanisme d'anti-entropie
     ☐ Ajouter référence pour les algorithmes de consensus coûteux et qui ne scalent pas

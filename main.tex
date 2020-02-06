@@ -18,6 +18,11 @@
 \definecolor{light}{gray}{.85}
 \definecolor{vlight}{gray}{.95}
 \definecolor{darkgreen}{rgb}{0.0, 0.2, 0.13}
+\definecolor{mydarkblue}{RGB}{116,173,209}
+\definecolor{mylightblue}{RGB}{171,217,233}
+\definecolor{mydarkorange}{RGB}{244,109,67}
+\definecolor{mylightorange}{RGB}{253,174,97}
+\definecolor{mydarkred}{RGB}{215,48,39}
 }
 
 \usepackage[draft,inline,nomargin,index]{fixme}
@@ -46,6 +51,13 @@
     common/.style={anchor=west, draw, rectangle, minimum height=6mm},
     letter/.style={common, minimum width=\widthletter},
     block/.style={common, minimum width=\widthblock},
+    cross/.style={
+        path picture={
+            \draw[mydarkred, very thick]
+                (path picture bounding box.south east)--(path picture bounding box.north west)
+                (path picture bounding box.south west)--(path picture bounding box.north east);
+        }
+    }
 }
 
 % Acronyms
@@ -66,7 +78,7 @@
 
 \begin{document}
 
-\title{Efficient Renaming in \acp{CRDT}}
+\title{Efficient Renaming in \aclp{CRDT}}
 
 \author{Matthieu Nicolas}
 \email{matthieu.nicolas@loria.fr}
@@ -185,9 +197,9 @@ LogootSplit is then able to group them into one block to minimise the metadata s
         \centering
         \begin{tikzpicture}
             \path
-                node[letter, label=below:{\id{i}{A0}{0}}] {H}
-                to ++(0:\widthletter) node[letter, label=below:{\id{i}{A0}{1}}] {L}
-                to ++(0:\widthletter) node[letter, label=below:{\id{i}{A0}{2}}] {O};
+                node[letter, label=below:{\id{i}{B0}{0}}] {H}
+                to ++(0:\widthletter) node[letter, label=below:{\id{i}{B0}{1}}] {L}
+                to ++(0:\widthletter) node[letter, label=below:{\id{i}{B0}{2}}] {O};
         \end{tikzpicture}
         \caption{Elements with their corresponding identifiers}
         \label{fig:logootsplit-seq-as-letters}
@@ -196,7 +208,7 @@ LogootSplit is then able to group them into one block to minimise the metadata s
         \centering
         \begin{tikzpicture}
             \path
-                node[block, label=below:{\id{i}{A0}{0..2}}] {HLO};
+                node[block, label=below:{\id{i}{B0}{0..2}}] {HLO};
         \end{tikzpicture}
         \caption{Elements grouped into a block}
         \label{fig:logootsplit-seq-as-block}
@@ -219,11 +231,11 @@ In this example, since the node inserts a new element between contiguous identif
     \centering
     \begin{tikzpicture}
         \path
-            node {\textbf{B}}
-            to ++(0:\widthletter) node[block, label=below:{\id{i}{A0}{0..2}}] (HLO) {HLO}
-            to ++(0:5 * \widthletter) node[letter, label=below:{\id{i}{A0}{0}}] (H) {H}
-            to ++(0:\widthletter) node[letter, fill=orange!30, label=above:{\color{orange!70}\id{i}{A0}{0}\id{f}{B0}{0}}] {E}
-            to ++(0:\widthletter) node[block, label=below:{\id{i}{A0}{1..2}}] {LO};
+            node {\textbf{A}}
+            to ++(0:\widthletter) node[block, label=below:{\id{i}{B0}{0..2}}] (HLO) {HLO}
+            to ++(0:5 * \widthletter) node[letter, label=below:{\id{i}{B0}{0}}] (H) {H}
+            to ++(0:\widthletter) node[letter, fill=mydarkorange, label=above:{\color{mydarkorange}\id{i}{B0}{0}\id{f}{A0}{0}}] {E}
+            to ++(0:\widthletter) node[block, label=below:{\id{i}{B0}{1..2}}] {LO};
 
         \draw[->, thick] (HLO) -- node[below, align=center]{\emph{insert "e"}\\\emph{between}\\\emph{"h" and "l"}} (H);
     \end{tikzpicture}
@@ -313,10 +325,10 @@ This operation reassigns arbitrary identifiers to elements.
         \begin{tikzpicture}
             \path
                 node {\textbf{A}}
-                to ++(0:\widthletter) node[letter, label=below:{\id{i}{A0}{0}}] {H}
-                to ++(0:\widthletter) node[letter, fill=orange!30, label=above:{\color{orange!70}\id{i}{A0}{0}\id{f}{B0}{0}}] {E}
-                to ++(0:\widthletter) node[block, label=below:{\id{i}{A0}{1..2}}] (LO) {LO}
-                to ++(0:4 * \widthletter) node[letter, fill=blue!30, label=below:{\color{blue!60}\id{i}{A1}{0}}] (H) {H};
+                to ++(0:\widthletter) node[letter, label=below:{\id{i}{B0}{0}}] {H}
+                to ++(0:\widthletter) node[letter, fill=mydarkorange, label=above:{\color{mydarkorange}\id{i}{B0}{0}\id{f}{A0}{0}}] {E}
+                to ++(0:\widthletter) node[block, label=below:{\id{i}{B0}{1..2}}] (LO) {LO}
+                to ++(0:4 * \widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0}}] (H) {H};
 
             \draw[->, thick] (LO) -- node[below, align=center]{\emph{rename}} (H);
         \end{tikzpicture}
@@ -327,11 +339,11 @@ This operation reassigns arbitrary identifiers to elements.
         \begin{tikzpicture}
             \path
                 node {\textbf{A}}
-                to ++(0:\widthletter) node[letter, label=below:{\id{i}{A0}{0}}] {H}
-                to ++(0:\widthletter) node[letter, fill=orange!30, label=above:{\color{orange!70}\id{i}{A0}{0}\id{f}{B0}{0}}] {E}
-                to ++(0:\widthletter) node[block, label=below:{\id{i}{A0}{1..2}}] (LO) {LO}
-                to ++(0:4 * \widthletter) node[letter, fill=blue!30, label=below:{\color{blue!60}\id{i}{A1}{0}}] (H) {H}
-                to ++(0:\widthletter) node[letter, fill=blue!30, label=below:{\color{blue!60}\id{i}{A1}{1}}] {E};
+                to ++(0:\widthletter) node[letter, label=below:{\id{i}{B0}{0}}] {H}
+                to ++(0:\widthletter) node[letter, fill=mydarkorange, label=above:{\color{mydarkorange}\id{i}{B0}{0}\id{f}{A0}{0}}] {E}
+                to ++(0:\widthletter) node[block, label=below:{\id{i}{B0}{1..2}}] (LO) {LO}
+                to ++(0:4 * \widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0}}] (H) {H}
+                to ++(0:\widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{1}}] {E};
 
             \draw[->, thick] (LO) -- node[below, align=center]{\emph{rename}} (H);
         \end{tikzpicture}
@@ -342,10 +354,10 @@ This operation reassigns arbitrary identifiers to elements.
         \begin{tikzpicture}
             \path
                 node {\textbf{A}}
-                to ++(0:\widthletter) node[letter, label=below:{\id{i}{A0}{0}}] {H}
-                to ++(0:\widthletter) node[letter, fill=orange!30, label=above:{\color{orange!70}\id{i}{A0}{0}\id{f}{B0}{0}}] {E}
-                to ++(0:\widthletter) node[block, label=below:{\id{i}{A0}{1..2}}] (LO) {LO}
-                to ++(0:4 * \widthletter) node[block, fill=blue!30, label=below:{\color{blue!60}\id{i}{A1}{0..3}}] (HELO) {HELO};
+                to ++(0:\widthletter) node[letter, label=below:{\id{i}{B0}{0}}] {H}
+                to ++(0:\widthletter) node[letter, fill=mydarkorange, label=above:{\color{mydarkorange}\id{i}{B0}{0}\id{f}{A0}{0}}] {E}
+                to ++(0:\widthletter) node[block, label=below:{\id{i}{B0}{1..2}}] (LO) {LO}
+                to ++(0:4 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..3}}] (HELO) {HELO};
 
             \draw[->, thick] (LO) -- node[below, align=center]{\emph{rename}} (HELO);
         \end{tikzpicture}
@@ -385,13 +397,45 @@ It is thus necessary to handle concurrent operations to \emph{rename} operations
 \begin{figure}
     \begin{subfigure}{\columnwidth}
         \centering
-        \includegraphics[width=0.9\columnwidth]{img/concurrent-insert-rename-inconsistent.png}
+        \begin{tikzpicture}
+            \path
+                node {\textbf{A}}
+                to ++(0:2 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..3}}] (HELO) {HELO}
+                to ++(0:4 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..3}}]  {HELO}
+                to ++(0:\widthblock) node[cross, letter, fill=mylightorange, label=above:{\color{mylightorange}\id{i}{B0}{0}\id{m}{B1}{0}}] (right) {L};
+
+            \path
+                to ++(270:2) node {\textbf{B}}
+                to ++(0:\widthletter) node[letter, label=below:{\id{i}{B0}{0}}] {H}
+                to ++(0:\widthletter) node[letter, fill=mydarkorange, label=above:{\color{mydarkorange}\id{i}{B0}{0}\id{f}{A0}{0}}] {E}
+                to ++(0:\widthletter) node[letter, fill=mylightorange, label=below:{\color{mylightorange}\id{i}{B0}{0}\id{m}{B1}{0}}] (left) {L}
+                to ++(0:\widthletter) node[block, label=below:{\id{i}{B0}{1..2}}] {LO};
+
+            \draw[dashed, ->, thick] (left.north) .. controls +(90:2 * \widthletter) and +(270:2 * \widthletter) .. node[below right, align=center]{\emph{insert}} (right.south);
+        \end{tikzpicture}
         \caption{Concurrent update leading to inconsistency}
         \label{fig:concurrent-insert-rename-inconsistent}
     \end{subfigure}
     \begin{subfigure}{\columnwidth}
         \centering
-        \includegraphics[width=0.9\columnwidth]{img/concurrent-insert-rename-fixed.png}
+        \begin{tikzpicture}
+            \path
+                node {\textbf{A}}
+                to ++(0:2 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..3}}] (HELO) {HELO}
+                to ++(0:4 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..1}}]  {HE}
+                to ++(0:\widthblock) node[letter, fill=mylightblue, label=above:{\color{mylightblue!20!mydarkblue}\id{i}{A1}{1}\id{i}{B0}{0}\id{m}{B1}{0}}] (right) {L}
+                to ++(0:\widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{2..3}}]  {LO};
+
+
+            \path
+                to ++(270:2) node {\textbf{B}}
+                to ++(0:\widthletter) node[letter, label=below:{\id{i}{B0}{0}}] {H}
+                to ++(0:\widthletter) node[letter, fill=mydarkorange, label=above:{\color{mydarkorange}\id{i}{B0}{0}\id{f}{A0}{0}}] {E}
+                to ++(0:\widthletter) node[letter, fill=mylightorange, label=below:{\color{mylightorange}\id{i}{B0}{0}\id{m}{B1}{0}}] (left) {L}
+                to ++(0:\widthletter) node[block, label=below:{\id{i}{B0}{1..2}}] {LO};
+
+            \draw[dashed, ->, thick] (left.north) .. controls +(90:2 * \widthletter) and +(270:2 * \widthletter) .. node[below right, align=center]{\emph{rename}\\ \emph{then insert}}(right.south);
+        \end{tikzpicture}
         \caption{Fixed scenario}
         \label{fig:concurrent-insert-rename-fixed}
     \end{subfigure}
