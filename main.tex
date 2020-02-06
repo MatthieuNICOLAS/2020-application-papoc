@@ -310,20 +310,45 @@ This operation reassigns arbitrary identifiers to elements.
 
 \begin{figure}
     \begin{subfigure}{\columnwidth}
-        \centering
-        \includegraphics[width=0.9\columnwidth]{img/renaming-first-id.png}
+        \begin{tikzpicture}
+            \path
+                node {\textbf{A}}
+                to ++(0:\widthletter) node[letter, label=below:{\id{i}{A0}{0}}] {H}
+                to ++(0:\widthletter) node[letter, fill=orange!30, label=above:{\color{orange!70}\id{i}{A0}{0}\id{f}{B0}{0}}] {E}
+                to ++(0:\widthletter) node[block, label=below:{\id{i}{A0}{1..2}}] (LO) {LO}
+                to ++(0:4 * \widthletter) node[letter, fill=blue!30, label=below:{\color{blue!60}\id{i}{A1}{0}}] (H) {H};
+
+            \draw[->, thick] (LO) -- node[below, align=center]{\emph{rename}} (H);
+        \end{tikzpicture}
         \caption{Selecting the new identifier of the first element}
         \label{fig:renaming-first-id}
     \end{subfigure}
     \begin{subfigure}{\columnwidth}
-        \centering
-        \includegraphics[width=0.9\columnwidth]{img/renaming-second-id.png}
+        \begin{tikzpicture}
+            \path
+                node {\textbf{A}}
+                to ++(0:\widthletter) node[letter, label=below:{\id{i}{A0}{0}}] {H}
+                to ++(0:\widthletter) node[letter, fill=orange!30, label=above:{\color{orange!70}\id{i}{A0}{0}\id{f}{B0}{0}}] {E}
+                to ++(0:\widthletter) node[block, label=below:{\id{i}{A0}{1..2}}] (LO) {LO}
+                to ++(0:4 * \widthletter) node[letter, fill=blue!30, label=below:{\color{blue!60}\id{i}{A1}{0}}] (H) {H}
+                to ++(0:\widthletter) node[letter, fill=blue!30, label=below:{\color{blue!60}\id{i}{A1}{1}}] {E};
+
+            \draw[->, thick] (LO) -- node[below, align=center]{\emph{rename}} (H);
+        \end{tikzpicture}
         \caption{Selecting the new identifier of the second one}
         \label{fig:renaming-second-id}
     \end{subfigure}
     \begin{subfigure}{\columnwidth}
-        \centering
-        \includegraphics[width=0.9\columnwidth]{img/renaming-final-state.png}
+        \begin{tikzpicture}
+            \path
+                node {\textbf{A}}
+                to ++(0:\widthletter) node[letter, label=below:{\id{i}{A0}{0}}] {H}
+                to ++(0:\widthletter) node[letter, fill=orange!30, label=above:{\color{orange!70}\id{i}{A0}{0}\id{f}{B0}{0}}] {E}
+                to ++(0:\widthletter) node[block, label=below:{\id{i}{A0}{1..2}}] (LO) {LO}
+                to ++(0:4 * \widthletter) node[block, fill=blue!30, label=below:{\color{blue!60}\id{i}{A1}{0..3}}] (HELO) {HELO};
+
+            \draw[->, thick] (LO) -- node[below, align=center]{\emph{rename}} (HELO);
+        \end{tikzpicture}
         \caption{Final state obtained}
         \label{fig:renaming-final-state}
     \end{subfigure}
