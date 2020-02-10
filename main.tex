@@ -128,7 +128,7 @@ Obtained experiment results demonstrate that this mechanism decreases the overhe
 
 \section{Introduction}
 
-In order to serve an ever-growing number of users and provide an increasing volume of data, large-scale systems such as data stores or collaborative editing tools adopt the \emph{eventual consistency} model \cite{10.1145/1057977.1057980}.
+In order to serve an ever-growing number of users and provide an increasing volume of data, large-scale systems such as data stores or collaborative editing tools adopt the \emph{eventual consistency} model \cite{10.1145/224057.224070}.
 This model ensures the high availability of the system, even in case of network partitions.
 To this end, it relaxes consistency constraints and minimises coordination between nodes.
 In this model, every node owns a copy of the data and can modify it.
@@ -292,10 +292,10 @@ We propose a new Sequence \ac{CRDT} belonging to the variable-size identifiers a
 To address the limitations of LogootSplit, we embed in this data structure a renaming mechanism.
 The purpose of this mechanism is to reassign shorter identifiers to elements and to regroup them into blocks to minimise the memory overhead of the whole sequence.
 
-To avoid costly and blocking consensus algorithms, we instead adopt the \emph{optimistic replication} approach for this mechanism.
+To avoid costly and blocking consensus algorithms, we instead adopt the \emph{optimistic replication} \cite{10.1145/1057977.1057980} approach for this mechanism.
 Nodes perform renaming without any coordination.
 However, this operation is not intrinsically commutative with others.
-If conflicts arise, we use \emph{operational transformations} to enable nodes to resolve them deterministically.
+If conflicts arise, we use \emph{operational transformations} \cite{10.1145/289444.289469,4668339} to enable nodes to resolve them deterministically.
 While transforming \emph{insert} and \emph{remove} operations against \emph{rename} one is straightforward, dealing with concurrent \emph{rename} operations is more tedious.
 For the sake of simplicity and brevity, we focus in this paper only on the first case.
 We leave the presentation and evaluation of required additional steps to handle concurrent \emph{rename} operations to a future work.

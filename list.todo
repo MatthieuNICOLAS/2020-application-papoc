@@ -2,7 +2,7 @@ Abstract:
     ☐ Retravailler l'abstract, notamment la partie sur les résultats obtenus
 
 Introduction:
-    ☐ Trouver des références appropriées pour OT
+    ✘ Trouver des références appropriées pour OT @cancelled (2/7/2020, 3:37:50 PM)
     ✔ Voir pour faire référence à Local-first software (https://dl.acm.org/doi/abs/10.1145/3359591.3359737) dans l'introduction @done (2/5/2020, 5:10:42 PM)
 
 Background:
@@ -10,7 +10,7 @@ Background:
     ✔ Ajouter figure illustrant la croissance des identifiants (exemple d'un split) @done (1/29/2020, 10:34:28 AM)
     ✔ Refaire figures avec formalisme indiqué dans le papier @done (2/5/2020, 5:09:51 PM)
     ✔ Ajouter figure sur le contenu ne représentant que 1% de la structure de donnée @done (1/30/2020, 5:29:03 PM)
-    ☐ Trouver référence sur un OT partiel (système avec plusieurs opés où seulement besoin de transformer par rapport 1 opération, contraintes moins fortes)
+    ✘ Trouver référence sur un OT partiel (système avec plusieurs opés où seulement besoin de transformer par rapport 1 opération, contraintes moins fortes) @cancelled (2/7/2020, 3:38:00 PM)
     ✔ Ajouter une phrase expliquant que, to the best of our knowledge, il n'y a pas eu de travaux pour améliorer les blocs dans LS @done (1/31/2020, 9:40:17 AM)
 
 Proposed approach:
@@ -19,6 +19,7 @@ Proposed approach:
     ☐ Ajouter quelques lignes sur le fait que les opérations doivent être livrées de manière causale par rapport au précédent rename (epoch-based delivery)
     ☐ Ajouter référence pour le mécanisme d'anti-entropie
     ☐ Ajouter référence pour les algorithmes de consensus coûteux et qui ne scalent pas
+    ✔ Ajouter références sur OT @done (2/10/2020, 10:54:53 AM)
 
 Evaluation:
 
