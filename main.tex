@@ -106,23 +106,23 @@
 
 \begin{abstract}
 To achieve high availability, large-scale distributed systems have to replicate data and to minimise coordination between nodes.
-The literature and industry increasingly adopt \acfp{CRDT} to design such systems.
+Literature and industry increasingly adopt \acfp{CRDT} to design such systems.
 \acp{CRDT} are data types which behave as traditional ones, e.g. the Set or the Sequence.
 However, compared to traditional data types, they are designed to support natively concurrent modifications.
 To this end, they embed in their specification a conflict-resolution mechanism.
 
 To resolve conflicts in a deterministic manner, CRDTs usually attach identifiers to elements stored in the data structure.
 Identifiers have to comply with several constraints according to the kind of \ac{CRDT}, such as uniqueness or belonging to a dense order.
-These constraints may prevent the identifiers’ size from being bounded.
+These constraints may hinder the identifiers’ size from being bounded.
 As the system progresses, identifiers tend to grow.
 This inflation deepens the overhead of the \ac{CRDT} over time, leading to performance issues.
 
 To address this issue, we propose a new CRDT for Sequence which embeds a renaming mechanism.
 It enables nodes to reassign shorter identifiers to elements in an uncoordinated manner.
-Obtained experiment results demonstrate that this mechanism decreases the overhead of the replicated data structure and eventually limits it.
+Experimental results demonstrate that this mechanism decreases the overhead of the replicated data structure and eventually limits it.
 \end{abstract}
 
-\keywords{CRDT, real-time collaborative editing, eventual consistency, memory-wise optimisation}
+\keywords{CRDT, real-time collaborative editing, eventual consistency, memory-wise optimisation, performance}
 
 \maketitle
 
@@ -143,9 +143,9 @@ However, compared to former ones, they are designed to support natively concurre
 To this end, they embed a conflict-resolution mechanism directly in their specification.
 
 \acp{CRDT} appear as a keystone technology of a new paradigm of applications: Local-First Software \cite{10.1145/3359591.3359737}.
-They also have been proven a fitting approach to build distributed real-time editors \cite{doi:10.1002/cpe.4108}.
+They also have been proven a suitable approach to build distributed real-time collaborative editors \cite{doi:10.1002/cpe.4108}.
 Still, they exhibits some limitations.
-Especially in the context of real-time collaborative editing, the internal conflict resolution mechanism accumulates large amount of metadata as the collaboration progresses.
+Especially in the context of real-time collaborative editing, the internal conflict resolution mechanism accumulates large amount of metadata as the collaboration goes on.
 
 To address this particular issue, we propose a new \ac{CRDT} for Sequence which embeds a renaming mechanism.
 It enables to minimise the overhead of the data structure by discarding accumulated metadata eventually.
@@ -159,13 +159,13 @@ Finally, \autoref{sec:conclusion} concludes and introduces possible future works
 \section{Background}
 \label{sec:background}
 
-To solve conflicts deterministically and ensure the convergence of all nodes, \acp{CRDT} relies on metadata.
-In the context of Sequence \acp{CRDT}, two different approaches were proposed, each trying to minimise the overhead introduced.
+To deterministically solve conflicts and ensure convergence of all nodes, \acp{CRDT} rely on metadata.
+In the context of Sequence \acp{CRDT}, two different approaches were proposed, both trying to minimise the overhead introduced.
 The first one \cite{oster:inria-00108523, ROH2011354,briot:hal-01343941} attaches fixed size identifiers to each element in the sequence and uses them to represent the sequence as a linked list.
 The downside of this approach is an ever growing overhead, as it needs to keep removed elements to deal with potential concurrent updates, effectively turning them into tombstones.
-The second one \cite{5158449,WeissICDCS09,AndreCollaborateCom2013} avoids the need of tombstones by instead attaching identifiers from a dense totally ordered set to elements.
-It is then able to order elements into the sequence by comparing their respective identifiers.
-However this approach also suffers from an ever-increasing overhead, as the size of such dense totally ordered identifiers is variable and grows over time.
+The second one \cite{5158449,WeissICDCS09,AndreCollaborateCom2013} avoids the need of tombstones by attaching identifiers from a dense totally ordered set to elements.
+Elements are ordered into the sequence by comparing their respective identifiers.
+However this approach suffers from an ever-increasing overhead, as the size of such dense totally ordered identifiers is variable and grows over time.
 
 In the context of this paper, we focus on the later approach.
 
@@ -177,17 +177,17 @@ As explained previously, it uses identifiers from a dense totally ordered set to
 To this end, LogootSplit attaches identifiers made of a list of tuples to elements.
 These tuples have four components:
 \begin{enumerate*}
-    \item the \emph{priority}, which embodies the intended position of the element
-    \item the \emph{node identifier},
-    \item the \emph{node sequence number} and
-    \item the \emph{offset}, which are combined to make identifiers unique.
+    \item a \emph{priority}, which embodies the intended position of the element
+    \item a \emph{node identifier},
+    \item a \emph{node sequence number} and
+    \item an \emph{offset}, which are combined to make identifiers unique.
 \end{enumerate*}
-By comparing identifiers using the lexicographical order, LogootSplit is able to determine of the element's position relatively to others.
+By comparing identifiers using the lexicographical order, LogootSplit is able to determine the element's position relatively to others.
 In this paper, we represent identifiers using the following notation: \id{priority}{node~id~node~seq}{offset} where $\trm{priority}$ is a lowercase letter, $\trm{node~id}$ an uppercase one and both $\trm{node~seq}$ and $\trm{offset}$ integers.
 
 Instead of storing an identifier for each element of the sequence, the main insight of LogootSplit is to aggregate dynamically elements into blocks.
 Grouping elements into blocks enables LogootSplit to assign logically an identifier to each element while effectively storing only the block's length and its first element's identifier.
-LogootSplit gathers into a block elements with \emph{contiguous} identifiers.
+LogootSplit gathers elements with \emph{contiguous} identifiers into a block.
 We call \emph{contiguous} two identifiers which are identical but for their last offset, and with the first one’s offset being the predecessor of the second one's.
 \autoref{fig:logootsplit-seq} illustrates such a case: in \autoref{fig:logootsplit-seq-as-letters}, the elements' identifiers form a chain of contiguous identifiers.
 LogootSplit is then able to group them into one block to minimise the metadata stored, as shown in \autoref{fig:logootsplit-seq-as-block}.
@@ -213,11 +213,11 @@ LogootSplit is then able to group them into one block to minimise the metadata s
         \caption{Elements grouped into a block}
         \label{fig:logootsplit-seq-as-block}
     \end{subfigure}
-    \caption{Representation of a LogootSplit sequence containing the elements "hlo"}
+    \caption{Representation of a LogootSplit sequence containing the elements "HLO"}
     \label{fig:logootsplit-seq}
 \end{figure}
 
-This feature allows to shift the cause of metadata growth from the number of elements to the number of blocks.
+This feature allows to shift the root of metadata growth from the number of elements to the number of blocks.
 As blocks can contain an arbitrary number of elements, it enables to reduce significantly the memory overhead of the data structure.
 
 \subsection{Limits}
@@ -225,7 +225,8 @@ As blocks can contain an arbitrary number of elements, it enables to reduce sign
 As stated previously, the size of identifiers from a dense totally ordered set is variable.
 When nodes insert new elements between two others with the same \emph{priority} value, LogootSplit has no other option than to increase the size of the resulting identifiers.
 \autoref{fig:example-split} illustrates such cases.
-In this example, since the node inserts a new element between contiguous identifiers, LogootSplit is not able to generate a fitting identifier of the same size. To comply with the intended order, LogootSplit generates the new identifier by appending to the predecessor's one a new tuple.
+In this example, since the node inserts a new element between contiguous identifiers, LogootSplit is not able to generate a fitting identifier of the same size.
+To comply with the intended order, LogootSplit generates a new identifier by appending to the predecessor's one a new tuple.
 
 \begin{figure}
     \centering
@@ -244,7 +245,7 @@ In this example, since the node inserts a new element between contiguous identif
 \end{figure}
 
 As a result, the size of identifiers tends to grow as the collaboration progresses.
-This growth impacts negatively the performances of the data structure on several aspects.
+This growth impacts negatively performance of the data structure on several aspects.
 Since identifiers attached to values become longer, the memory overhead of the data structure increases accordingly.
 This also increases the bandwidth consumption as nodes have to broadcast identifiers to others.
 
@@ -264,10 +265,10 @@ In our benchmarks, we measure that these issues eventually lead to the content r
     \label{fig:overhead-size}
 \end{figure}
 
-\subsection{Related works}
+\subsection{Related work}
 
 Over the years, several works were presented to reduce the growth of variable-size identifiers.
-However, to the best of our knowledge, no works have been presented to decrease the number of blocks generated.
+However, to the best of our knowledge, no work has been presented to decrease the number of blocks generated.
 
 In \cite{letia:hal-01248270,zawirski:hal-01248197}, authors design for Treedoc \cite{5158449} a renaming mechanism to reassign shorter identifiers to elements.
 Nodes rely on a consensus mechanism to trigger the renaming and a catch-up protocol to handle concurrent updates.
@@ -289,10 +290,10 @@ However, its impact would be diminished as insertions into blocks result in new 
 
 We propose a new Sequence \ac{CRDT} belonging to the variable-size identifiers approach: \emph{RenamableLogootSplit} \cite{nicolas:hal-01932552}.
 
-To address the limitations of LogootSplit, we embed in this data structure a renaming mechanism.
+To address the limitations of LogootSplit, we embed in the data structure a renaming mechanism.
 The purpose of this mechanism is to reassign shorter identifiers to elements and to regroup them into blocks to minimise the memory overhead of the whole sequence.
 
-To avoid costly and blocking consensus algorithms, we instead adopt the \emph{optimistic replication} \cite{10.1145/1057977.1057980} approach for this mechanism.
+To avoid costly and blocking consensus algorithms, we instead adopt the \emph{optimistic replication} \cite{10.1145/1057977.1057980} approach for our mechanism.
 Nodes perform renaming without any coordination.
 However, this operation is not intrinsically commutative with others.
 If conflicts arise, we use \emph{operational transformations} \cite{10.1145/289444.289469,4668339} to enable nodes to resolve them deterministically.
@@ -371,27 +372,27 @@ This operation reassigns arbitrary identifiers to elements.
 Its behavior is illustrated in \autoref{fig:renaming} and can be described as follows:
 \begin{enumerate*}
     \item It reuses the id of the first element of the sequence, but modified with the node's own id and sequence number (\autoref{fig:renaming-first-id})
-    \item It generates contiguous identifiers for all following elements (\autoref{fig:renaming-second-id}).
+    \item It generates contiguous identifiers for all remaining elements (\autoref{fig:renaming-second-id}).
 \end{enumerate*}
 As we assign contiguous identifiers to all elements of the sequence, we can eventually group them into one block as illustrated in \autoref{fig:renaming-final-state}.
 It allows nodes to benefit the most from the block feature and to minimise the overhead of the resulting state.
 
-In order for the system to eventually converge, other nodes have to rename their state identically.
+To eventually converge, other nodes have to rename their state identically.
 To achieve this, the node issuing the \emph{rename} operation broadcasts its former state to others.
 Using the former state, others compute the new identifier of each renamed identifier.
 However, other nodes' states may contain concurrently inserted identifiers.
 We will explain in \autoref{sec:dealing-with-concurrent-updates} how to rename them deterministically.
 
-Broadcasting the \emph{rename} operation embedding the former state may be quite bandwidth consuming since the size of identifiers and the number of blocks are not bounded.
+Broadcasting the \emph{rename} operation which embeds the former state may be quite bandwidth consuming since the size of identifiers and the number of blocks are not bounded.
 To partially address this issue, we propose a compression mechanism which sends only the necessary components to identify uniquely a block instead of whole identifiers.
-This compression mechanism allows to reduce to a fixed amount per block the metadata to broadcast.
+This compression mechanism allows to reduce the metadata to broadcast to a fixed amount per block.
 
 \subsection{Dealing with concurrent updates}
 
 \label{sec:dealing-with-concurrent-updates}
 
 As \emph{rename} operations can be issued without any kind of coordination, it is possible for other nodes to perform updates concurrently.
-Since identifiers are modified by the \emph{renaming} mechanism, applying concurrent updates as they are would result in inconsistencies as illustrated in \autoref{fig:concurrent-insert-rename-inconsistent}.
+Since identifiers are modified by the \emph{renaming} mechanism, applying naively concurrent updates would result in inconsistencies as illustrated in \autoref{fig:concurrent-insert-rename-inconsistent}.
 It is thus necessary to handle concurrent operations to \emph{rename} operations in a particular manner.
 
 \begin{figure}
@@ -503,7 +504,7 @@ Meanwhile, nodes can offload it onto the disk as it is only required to handle c
 
 \subsection{Simulations and benchmarks}
 
-To validate the proposed renaming mechanism, we performed an experimental evaluation to measure its performances on several aspects:
+To validate the proposed renaming mechanism, we performed an experimental evaluation to measure its performance on several aspects:
 \begin{enumerate*}
     \item the size of the data structure
     \item the integration time of \emph{insert} and \emph{remove} operations
@@ -539,7 +540,7 @@ Additionally, in the case of RenamableLogootSplit, one bot is arbitrarily design
 It performs \emph{rename} operations every 30k operations overall.
 
 The code of the simulations is available at the following address: \url{https://github.com/coast-team/mute-bot-random/}.
-This repository also contains the code corresponding to the benchmarks described in the next subsections as well as the results computed.
+This repository also contains the code corresponding to the benchmarks described in the next subsections as well as the results obtained.
 
 \begin{sloppypar}
 Meanwhile, our implementation of LogootSplit and RenamableLogootSplit are available at \url{https://github.com/coast-team/mute-structs}.
@@ -629,11 +630,11 @@ It is necessary to take this concern into account when designing the strategy us
 \label{sec:conclusion}
 
 In this paper, we introduced a novel Sequence \ac{CRDT} belonging to the variable-size identifiers approach: RenamableLogootSplit.
-This new data structure embeds into its specification a renaming mechanism.
+This new data structure embeds a renaming mechanism in its specification.
 It enables nodes to reassign shorter identifiers to elements and group them into one block to minimise the metadata.
 
 Obtained results experiments shown that RenamableLogootSplit reduces the overhead of the data structure by hundreds times compared to LogootSplit in the best-case scenario.
-They also exhibited that it outperforms LogootSplit even in the worst-case one.
+They also exhibited that it outperforms LogootSplit even in the worst-case.
 However, this comes at the price of an expensive but infrequent operation: the \emph{rename} operation.
 
 As explained previously, \emph{rename} operations can be perceived by users as latency spikes if delayed for too long.
