@@ -171,7 +171,7 @@ In the context of this paper, we focus on the later approach.
 
 \subsection{LogootSplit}
 
-Proposed by \citet{AndreCollaborateCom2013}, LogootSplit is the state of the art of the variable-size identifiers approach of Sequence \ac{CRDT}.
+Proposed by \citet{AndreCollaborateCom2013}, LogootSplit (LS) is the state of the art of the variable-size identifiers approach of Sequence \ac{CRDT}.
 As explained previously, it uses identifiers from a dense totally ordered set to position elements into the replicated sequence.
 
 To this end, LogootSplit attaches identifiers made of a list of tuples to elements.
@@ -288,7 +288,7 @@ However, its impact would be diminished as insertions into blocks result in new 
 \section{Proposed approach}
 \label{sec:proposition}
 
-We propose a new Sequence \ac{CRDT} belonging to the variable-size identifiers approach: \emph{RenamableLogootSplit} \cite{nicolas:hal-01932552}.
+We propose a new Sequence \ac{CRDT} belonging to the variable-size identifiers approach: \emph{RenamableLogootSplit} (RLS) \cite{nicolas:hal-01932552}.
 
 To address the limitations of LogootSplit, we embed in the data structure a renaming mechanism.
 The purpose of this mechanism is to reassign shorter identifiers to elements and to regroup them into blocks to minimise the memory overhead of the whole sequence.
@@ -554,21 +554,21 @@ This data structure enables us to achieve \emph{insert} and \emph{remove} operat
 
 Using the snapshots generated, we compare the evolution of the size of the data structure in collaborative editing sessions.
 \autoref{fig:evolution-document-size} presents the results.
-On this plot, the blue line corresponds to the size of the content while the red one exhibits the growth of the LogootSplit data structure.
+On this plot, the blue line corresponds to the size of the content while the dash-dotted red one exhibits the growth of the LogootSplit data structure.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\columnwidth]{img/snapshots-sizes.pdf}
+    \includegraphics[width=\columnwidth]{img/snapshots-sizes.pdf}
     \caption{Evolution of the size of the document}
     \label{fig:evolution-document-size}
 \end{figure}
 
-The green line illustrates the growth of the RenamableLogootSplit document in its best-case scenario.
+The dotted green line illustrates the growth of the RenamableLogootSplit document in its best-case scenario.
 In this scenario, \emph{rename} operations become stable as soon as they are issued.
 Former states can then be garbage collected safely, maximising the benefits of the \emph{renaming} mechanism.
 In this case, we observe that \emph{rename} operations reset the overhead of the data structure and eventually reduce by hundred times the document size compared to LogootSplit.
 
-As for the orange line, it represents RenamableLogootSplit worst-case scenario.
+As for the dashed orange line, it represents RenamableLogootSplit worst-case scenario.
 Here, we assume that \emph{rename} operations never become causally stable and that nodes have to store former states forever.
 However, obtained results show that RenamableLogootSplit outperforms LogootSplit and reduce by 66\% the size of the data structure, even in this case.
 This outcome is explained by the fact that the AVL does not only store the content and blocks corresponding to the sequence.
@@ -596,15 +596,15 @@ The obtained results are presented in \autoref{fig:evolution-integration-time-in
         \caption{Remote operations}
         \label{fig:evolution-integration-time-remote-insert-remove}
     \end{subfigure}
-    \caption{Evolution of the integration time of standard operations}
+    \caption{Integration time of standard operations}
     \label{fig:evolution-integration-time-insert-remove}
 \end{figure}
 
 \autoref{fig:evolution-integration-time-local-insert-remove} displays the integration times of local operations while \autoref{fig:evolution-integration-time-remote-insert-remove} exhibits remote ones.
-In both cases, the orange boxplots correspond to LogootSplit's integration times while blue ones to RenamableLogootSplit's ones.
+In both cases, the light orange boxplots correspond to LogootSplit's integration times while dark blue ones to RenamableLogootSplit's ones.
 The results show that the \emph{renaming} mechanism allows to reduce the integration times of future operations.
 
-In \autoref{fig:evolution-integration-time-remote-insert-remove}, the green boxplots display the integration times of concurrent operations to a \emph{rename} one.
+In \autoref{fig:evolution-integration-time-remote-insert-remove}, the white boxplots display the integration times of concurrent operations to a \emph{rename} one.
 As illustrated in \autoref{sec:dealing-with-concurrent-updates}, these operations require to be transformed before being applied to the renamed state.
 The results presented here show that this is actually faster than applying them directly on the former state.
 
@@ -612,12 +612,12 @@ The results presented here show that this is actually faster than applying them 
 
 Finally, we measured the integration time of the \emph{rename} operation according to the size of the document.
 Results are displayed in \autoref{fig:evolution-integration-time-rename}.
-In this figure, the blue line corresponds to the integration time of a \emph{local} rename operation while the orange one corresponds to the integration time of a remote one.
+In this figure, the blue line corresponds to the integration time of a \emph{local} rename operation while the dashed orange one corresponds to the integration time of a remote one.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\columnwidth]{img/integration-time-rename.pdf}
-    \caption{Evolution of the integration time of rename operations}
+    \includegraphics[width=\columnwidth]{img/integration-time-rename.pdf}
+    \caption{Integration time of rename operations}
     \label{fig:evolution-integration-time-rename}
 \end{figure}
 
