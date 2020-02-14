@@ -79,7 +79,7 @@
 
 \begin{document}
 
-\title{Efficient Renaming in \aclp{CRDT}}
+\title{Efficient Renaming in Sequence \aclp{CRDT}}
 
 \author{Matthieu Nicolas}
 \email{matthieu.nicolas@loria.fr}
@@ -175,7 +175,7 @@ In the context of this paper, we focus on the later approach.
 Proposed by \citet{AndreCollaborateCom2013}, LogootSplit (LS) is the state of the art of the variable-size identifiers approach of Sequence \ac{CRDT}.
 As explained previously, it uses identifiers from a dense totally ordered set to position elements into the replicated sequence.
 
-To this end, LogootSplit attaches identifiers made of a list of tuples to elements.
+To this end, LogootSplit generates identifiers made of a list of tuples to elements.
 These tuples have four components:
 \begin{enumerate*}
     \item a \emph{position}, which embodies the intended position of the element
@@ -375,18 +375,22 @@ Its behavior is illustrated in \autoref{fig:renaming} and can be described as fo
     \item It reuses the id of the first element of the sequence, but modified with the node's own id and sequence number (\autoref{fig:renaming-first-id})
     \item It generates contiguous identifiers for all remaining elements (\autoref{fig:renaming-second-id}).
 \end{enumerate*}
-As we assign contiguous identifiers to all elements of the sequence, we can eventually group them into one block as illustrated in \autoref{fig:renaming-final-state}.
+As we assign contiguous identifiers to all elements of the sequence, we eventually group them into one block as illustrated in \autoref{fig:renaming-final-state}.
 It allows nodes to benefit the most from the block feature and to minimise the overhead of the resulting state.
 
 To eventually converge, other nodes have to rename their state identically.
-To achieve this, the node issuing the \emph{rename} operation broadcasts its former state to others.
-Using the former state, others compute the new identifier of each renamed identifier.
-However, other nodes' states may contain concurrently inserted identifiers.
-We will explain in \autoref{sec:dealing-with-concurrent-updates} how to rename them deterministically.
+However, they can not simply replace their current state with the new renamed one.
+Indeed, they may have performed concurrent updates on their states.
+To not discard these updates, nodes have to process the \emph{rename} operation.
+To this end, the node issuing the \emph{rename} operation broadcasts its former state to others.
+Using the former state, other nodes compute the new identifier of each renamed identifier.
+As for concurrently inserted identifiers, we will explain in \autoref{sec:dealing-with-concurrent-updates} how nodes rename them in a deterministic way.
 
-Broadcasting the \emph{rename} operation which embeds the former state may be quite bandwidth consuming since the size of identifiers and the number of blocks are not bounded.
-To partially address this issue, we propose a compression mechanism which sends only the necessary components to identify uniquely a block instead of whole identifiers.
-This compression mechanism allows to reduce the metadata to broadcast to a fixed amount per block.
+To limit bandwidth consumption of the renaming mechanism, we propose a compression technique.
+With this compression technique, nodes embed only necessary components to uniquely identify a block instead of whole identifiers in \emph{rename} operations.
+% Upon reception of the compressed operation, nodes computes the former state by browsing their current state and the concurrent \emph{remove} operations.
+This compression technique allows to reduce the metadata to broadcast to a fixed amount per block.
+Additionally, by issuing \emph{rename} operations as soon as the state reaches a given number of blocks, we can set an upper-bound to their size.
 
 \subsection{Dealing with concurrent updates}
 
@@ -522,7 +526,7 @@ Once the document reaches the critical length, collaborators switch to a second 
 From this point, they stop adding new content and focus on revamping existing parts instead.
 This is simulated by balancing the ratio between \emph{insert} and \emph{remove} operations.
 Each author has to perform a given number of operations and the collaboration ends once all of them received all operations.
-We take snapshots of the document at given steps of the collaboration to follow the evolution of the document.
+We take snapshots of the document at given steps of the collaboration to measure the evolution of the document.
 
 We ran these simulations with the following experimental settings: we deployed 10 bots as separate Docker containers on a single workstation.
 Each container corresponds to a single mono-threaded Node.js process (version 13.1.0) simulating an author.
@@ -541,7 +545,7 @@ The code of the simulations is available at the following address: \url{https://
 This repository also contains the code corresponding to the benchmarks described in the next subsections as well as the results obtained.
 
 \begin{sloppypar}
-Meanwhile, our implementation of LogootSplit and RenamableLogootSplit are available at \url{https://github.com/coast-team/mute-structs}.
+Our implementation of LogootSplit and RenamableLogootSplit are available at \url{https://github.com/coast-team/mute-structs}.
 Both implementations represent the sequence using an AVL Tree, a self-balancing binary search tree.
 This data structure enables us to achieve \emph{insert} and \emph{remove} operations in logarithmic time.
 \end{sloppypar}
