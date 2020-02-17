@@ -266,26 +266,6 @@ In our benchmarks, we measure that these issues eventually lead to the content r
     \label{fig:overhead-size}
 \end{figure}
 
-\subsection{Related work}
-
-Over the years, several works were presented to reduce the growth of variable-size identifiers.
-However, to the best of our knowledge, no work has been presented to decrease the number of blocks generated.
-
-In \cite{letia:hal-01248270,zawirski:hal-01248197}, authors design for Treedoc \cite{5158449} a renaming mechanism to reassign shorter identifiers to elements.
-Nodes rely on a consensus mechanism to trigger the renaming and a catch-up protocol to handle concurrent updates.
-Since consensus algorithms are costly in large-scale distributed systems with churn, \citet{letia:hal-01248270} introduce a two-tier architecture.
-Nodes are splitted between the \emph{core}, a set of stable and highly connected nodes, and the \emph{nebula} made of the remaining ones.
-Every node can update the sequence but only members of the \emph{core} participate in the consensus leading to renaming.
-However the \emph{core-nebula} approach is not suited to all kinds of applications.
-In fully distributed systems, there is no central authority to provide the set of stable nodes acting as the \emph{core}.
-
-In \cite{nedelec_2013_lseq,doi:10.1002/cpe.4108}, \citeauthor{nedelec_2013_lseq} introduce another approach to address the identifiers growth issue: LSEQ.
-Its insight consists in using several strategies to select the \emph{position} value of a new tuple.
-These strategies prevent nodes from quickly saturating the space between two existing identifiers.
-This approach enables to reduce the growth of identifiers.
-And although the LSEQ approach has been designed for Logoot \cite{WeissICDCS09}, it can also be applied to LogootSplit.
-However, its impact would be diminished as insertions into blocks result in new identifiers with increased sizes nonetheless.
-
 \section{Proposed approach}
 \label{sec:proposition}
 
@@ -634,6 +614,43 @@ The main result of this benchmark is that the unit of time used when applying \e
 However other operations can not be integrated during the processing of \emph{rename} operations: remote operations won't be displayed to the user while local ones won't be propagated to others.
 \emph{Rename} operations can thus be perceived as latency peaks by users and degrade their experience if they are too long to process.
 It is necessary to take this concern into account when designing the strategy used to trigger \emph{rename} operations to avoid such cases.
+
+\section{Related work}
+
+Over the years, several works were presented to reduce the growth of variable-size identifiers.
+However, to the best of our knowledge, no work has been presented to decrease the number of blocks generated.
+
+\subsection{The core-nebula approach}
+
+In \cite{letia:hal-01248270,zawirski:hal-01248197}, authors design for Treedoc \cite{5158449} a renaming mechanism to reassign shorter identifiers to elements.
+Nodes rely on a consensus mechanism to trigger the renaming and a catch-up protocol to handle concurrent updates.
+Since consensus algorithms are costly in large-scale distributed systems with churn, \citet{letia:hal-01248270} introduce a two-tier architecture.
+Nodes are splitted between the \emph{core}, a set of stable and highly connected nodes, and the \emph{nebula} made of the remaining ones.
+Every node can update the sequence but only members of the \emph{core} participate in the consensus leading to renaming.
+
+While quite similar, our approach differs on several aspects.
+First, in the \emph{core-nebula} approach, nodes from the \emph{core} are unable to integrate concurrent operations to the \emph{rename} one.
+Nodes from the \emph{nebula} have to use the catch-up protocol to transform their concurrent operations and to re-broadcast them.
+It requires additional communications and introduces some delay in the collaboration.
+In our approach, every node is able to transform and to integrate operations from past epochs directly.
+
+Second, we designed RenamableLogootSplit with fully distributed systems in mind.
+Nodes can issue \emph{rename} operations without coordination and use \emph{operational transformation} to resolve conflicts.
+However, to simplify the system, it is possible to adopt the \emph{core-nebula} approach to prevent nodes from issuing concurrent \emph{rename} operations.
+
+\subsection{The LSEQ approach}
+
+In \cite{nedelec_2013_lseq,doi:10.1002/cpe.4108}, \citeauthor{nedelec_2013_lseq} introduce another approach to address the identifiers growth issue: LSEQ.
+Its insight consists in combining several strategies to select the \emph{position} value of a new tuple.
+These strategies prevent nodes from quickly saturating the space between two existing identifiers and having to increase the size of identifiers.
+This approach enables to decrease the growth of identifiers.
+
+However, LSEQ does not prevent each inserted element to introduce its own overhead.
+On the other hand, our approach allows the metadata of the data structure to be periodically reset, regardless of the number of elements.
+
+As with the \emph{core-nebula} approach, it is possible to combine the LSEQ approach with ours.
+The identifier allocation strategies of LSEQ would allow to reduce the growth of identifiers between \emph{rename} operations.
+It would enable to reduce the frequency of the expensive \emph{rename} operation without deteriorating the performance of the data structure.
 
 \section{Conclusions and future work}
 \label{sec:conclusion}
