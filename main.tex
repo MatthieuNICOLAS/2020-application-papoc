@@ -298,9 +298,6 @@ To avoid costly and blocking consensus algorithms, we instead adopt the \emph{op
 Nodes perform renaming without any coordination.
 However, this operation is not intrinsically commutative with others.
 If conflicts arise, we use \emph{operational transformations} \cite{10.1145/289444.289469,4668339} to enable nodes to resolve them deterministically.
-While transforming \emph{insert} and \emph{remove} operations against \emph{rename} one is straightforward, dealing with concurrent \emph{rename} operations is more tedious.
-For the sake of simplicity and brevity, we focus in this paper only on the first case.
-We leave the presentation and evaluation of required additional steps to handle concurrent \emph{rename} operations to a future work.
 
 \subsection{System Model}
 
@@ -318,6 +315,8 @@ The layer also ensures that \emph{remove} operations are delivered after corresp
 Nodes use an anti-entropy mechanism to synchronise in a pairwise manner, by detecting and re-exchanging lost operations.
 
 \subsection{\emph{rename} operation}
+
+\label{sec:rename-op}
 
 \emph{RenamableLogootSplit} enables nodes to reduce the overhead of their replica by the means of a new operation: the \emph{rename} operation.
 This operation reassigns arbitrary identifiers to elements.
@@ -381,7 +380,7 @@ It allows nodes to benefit the most from the block feature and to minimise the o
 To eventually converge, other nodes have to rename their state identically.
 However, they can not simply replace their current state with the new renamed one.
 Indeed, they may have performed concurrent updates on their states.
-To not discard these updates, nodes have to process the \emph{rename} operation.
+To not discard these updates, nodes have to process the \emph{rename} operation themselves.
 To this end, the node issuing the \emph{rename} operation broadcasts its former state to others.
 Using the former state, other nodes compute the new identifier of each renamed identifier.
 As for concurrently inserted identifiers, we will explain in \autoref{sec:dealing-with-concurrent-updates} how nodes rename them in a deterministic way.
@@ -452,11 +451,11 @@ It is thus necessary to handle concurrent operations to \emph{rename} operations
 To detect them, we use an \emph{epoch-based} system.
 We add an \emph{epoch} to the sequence as a property.
 Each time a \emph{rename} operation is applied, the sequence progresses to a new epoch.
-When nodes issue operation, they tag them with their current epoch.
+When nodes issue operations, they tag them with their current epoch.
 Upon the reception of an operation, nodes compare their current epoch to the operation's one.
 If they differ, nodes have to transform the operation before applying it.
 
-To transform an operation, nodes use the algorithm described in \autoref{alg:renameId}.
+To transform an \emph{insert} or \emph{remove} operation, nodes use the algorithm described in \autoref{alg:renameId}.
 This algorithm enables nodes to transform identifiers against the \emph{rename} operation.
 The main idea of this algorithm is to use the predecessor of the given identifier to do so.
 The algorithm consists mainly in
@@ -467,18 +466,15 @@ The algorithm consists mainly in
 \end{enumerate*}
 An example of its usage is illustrated in \autoref{fig:concurrent-insert-rename-fixed}.
 
-Nodes use the same algorithm to rename identifiers they inserted concurrently when applying remote \emph{rename} operations.
-
-Since nodes rely on the former state to transform concurrent operations to a \emph{rename} one, they have to store it.
-Nodes need it until each of them can no longer issue concurrent operations to the corresponding \emph{rename} operation.
-In other words, nodes can safely garbage collect the former state once the \emph{rename} operation became causally stable \cite{10.1007/978-3-662-43352-2_11}.
-Meanwhile, nodes can offload it onto the disk as it is only required to handle concurrent operations.
-
 \begin{algorithm}
     \caption{Rename concurrently generated identifier}
     \label{alg:renameId}
     \begin{algorithmic}
-    \Function{renameId}{$\trm{id}, \trm{nId}, \trm{nSeq}, \trm{renamedBlocks}$}
+    \State \Comment $\trm{id}$ is the identifier to rename
+    \State \Comment $\trm{renamedBlocks}$ is the former state
+    \State \Comment $\trm{nId}$ is $\trm{node~id}$ of the node which issued the \emph{rename} op
+    \State \Comment $\trm{nSeq}$ is $\trm{node~seq}$ of the node which issued the \emph{rename} op
+    \Function{renameId}{$\trm{id}, \trm{renamedBlocks}, \trm{nId}, \trm{nSeq}$}
         \State $\trm{length} \gets \trm{renamedBlocks.length}$
         \State $\trm{firstId} \gets \trm{idBegin}(\trm{renamedBlocks}[0])$
         \State $\trm{lastId} \gets \trm{idEnd}(\trm{renamedBlocks}[\trm{length} - 1])$\\
@@ -503,6 +499,15 @@ Meanwhile, nodes can offload it onto the disk as it is only required to handle c
     \EndFunction
     \end{algorithmic}
 \end{algorithm}
+
+As explained in \autoref{sec:rename-op}, some nodes may have applied concurrent \emph{insert} operations to their state before receiving a given remote \emph{rename} operation.
+To rename these concurrently inserted identifiers, they also use \autoref{alg:renameId}.
+It allows them to eventually converge with nodes which processed the \emph{rename} operations before the concurrent \emph{insert} operations.
+
+Since nodes rely on the former state to transform concurrent operations to a \emph{rename} one, they have to store it.
+Nodes need it until each of them can no longer issue concurrent operations to the corresponding \emph{rename} operation.
+In other words, nodes can safely garbage collect the former state once the \emph{rename} operation became causally stable \cite{10.1007/978-3-662-43352-2_11}.
+Meanwhile, nodes can offload it onto the disk as it is only required to handle concurrent operations.
 
 \section{Evaluation}
 \label{sec:evaluation}
@@ -650,7 +655,7 @@ In order to prevent such user experience deterioration, it is necessary to set a
 User behaviour studies, inspired by \cite{ignat:hal-01088815,ignat:hal-01238831}, could be led in the context of real-time collaborative writing to identify this limit.
 
 Finally, we designed RenamableLogootSplit with fully distributed systems in mind.
-However, for the sake of simplicity, we presented it in this paper under the assumption that no concurrent \emph{rename} operations were issued.
+However, for the sake of brevity, we presented it in this paper under the assumption that no concurrent \emph{rename} operations were issued.
 This scenario is actually akin to systems in which nodes synchronise to trigger the renaming mechanism.
 In a future work, we will introduce and evaluate the additional steps required to use RenamableLogootSplit in its original settings.
 
