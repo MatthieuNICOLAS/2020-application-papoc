@@ -654,12 +654,9 @@ It enables nodes to reassign shorter identifiers to elements and group them into
 \end{sloppypar}
 
 Experiments results showed that RenamableLogootSplit reduces the overhead of the data structure in both best-case (by hundreds times) and worst-case scenarios.
-% TODO: retravailler
-However, this comes at the price of an expensive but infrequent operation: the \emph{rename} operation.
 
-As explained previously, \emph{rename} operations can be perceived by users as latency peaks if delayed for too long.
-In order to prevent such user experience deterioration, it is necessary to set an upper-bound to their integration time.
-User behaviour studies, inspired by \cite{ignat:hal-01088815,ignat:hal-01238831}, could be led in the context of real-time collaborative writing to identify this limit.
+Regarding future work, we now have to design an efficient strategy used to trigger \emph{rename} operations while minimising their impact on the user experience.
+User behaviour studies, inspired by \cite{ignat:hal-01088815,ignat:hal-01238831}, could be led in the context of real-time collaborative writing to set an acceptable upper-bound to their integration time.
 
 Finally, we designed RenamableLogootSplit with fully distributed systems in mind.
 However, for the sake of brevity, we presented it in this paper under the assumption that no concurrent \emph{rename} operations were issued.
