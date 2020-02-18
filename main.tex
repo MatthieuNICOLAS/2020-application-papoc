@@ -351,7 +351,7 @@ This operation reassigns arbitrary identifiers to elements.
     \label{fig:renaming}
 \end{figure}
 
-Its behavior is illustrated in \autoref{fig:renaming} and can be described as follows:
+Its behaviour is illustrated in \autoref{fig:renaming} and can be described as follows:
 \begin{enumerate*}
     \item It reuses the id of the first element of the sequence, but modified with the node's own id and sequence number (\autoref{fig:renaming-first-id})
     \item It generates contiguous identifiers for all remaining elements (\autoref{fig:renaming-second-id}).
@@ -493,7 +493,8 @@ In other words, nodes can safely garbage collect the former state once the \emph
 Meanwhile, nodes can offload it onto the disk as it is only required to handle concurrent operations.
 
 In this section, we introduced our approach RenamableLogootSplit.
-We presented the behaviour of the \emph{rename} operation and how to deal with concurrent \emph{insert} and \emph{remove} operations.
+We presented how the \emph{rename} operation reassigns shorter identifiers to every elements to group them into one block and reduce the overhead of the data structure.
+We also showed how to transform concurrent \emph{insert} and \emph{remove} operations against the \emph{rename} one to resolve conflicts.
 In the next section, we proceed to the evaluation of the proposed approach.
 
 \section{Evaluation}
