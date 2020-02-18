@@ -6,6 +6,8 @@
 \usepackage{acronym} % \ac[p], \acl[p], \acs[p], \acf[p]
 \usepackage{algorithm} % \begin{algorithm} \end{algorithm}
 \usepackage{algpseudocode} % \begin{algorithmic} \end{algorithmic}
+\algnewcommand{\LeftComment}[1]{$\triangleright$ #1}
+
 \usepackage[inline]{enumitem} % \begin{enumerate*} \end{enumerate*}
 \usepackage{tikz} % \begin{tikzpicture} \end{tikzpicture}
 
@@ -450,11 +452,12 @@ An example of its usage is illustrated in \autoref{fig:concurrent-insert-rename-
     \caption{Rename concurrently generated identifier}
     \label{alg:renameId}
     \begin{algorithmic}
-    \State \Comment $\trm{id}$ is the identifier to rename
-    \State \Comment $\trm{renamedBlocks}$ is the former state
-    \State \Comment $\trm{nId}$ is $\trm{node~id}$ of the node which issued the \emph{rename} op
-    \State \Comment $\trm{nSeq}$ is $\trm{node~seq}$ of the node which issued the \emph{rename} op
     \Function{renameId}{$\trm{id}, \trm{renamedBlocks}, \trm{nId}, \trm{nSeq}$}
+        \Statex \LeftComment{$\trm{id}$ is the identifier to rename}
+        \Statex \LeftComment{$\trm{renamedBlocks}$ is the former state}
+        \Statex \LeftComment{$\trm{nId}$ is $\trm{node~id}$ of the node which issued the \emph{rename} op}
+        \Statex \LeftComment{$\trm{nSeq}$ is $\trm{node~seq}$ of the node which issued the \emph{rename} op}\\
+
         \State $\trm{length} \gets \trm{renamedBlocks.length}$
         \State $\trm{firstId} \gets \trm{idBegin}(\trm{renamedBlocks}[0])$
         \State $\trm{lastId} \gets \trm{idEnd}(\trm{renamedBlocks}[\trm{length} - 1])$\\
@@ -474,7 +477,7 @@ An example of its usage is illustrated in \autoref{fig:concurrent-insert-rename-
             \State $\trm{predOfNewFirstId} \gets \trm{new} \ \trm{Id}(\trm{pos}, \trm{nId}, \trm{nSeq}, -1)$
             \State \Return $\trm{concat}(\trm{predOfNewFirstId}, \trm{id})$
         \Else
-            \State \Return $\trm{id}$ \Comment Return the identifier unchanged as it does not interfere with the renaming
+            \State \Return $\trm{id}$ \Comment Return the identifier unchanged as it does not conflict with the rename op
         \EndIf
     \EndFunction
     \end{algorithmic}
@@ -488,6 +491,10 @@ Since nodes rely on the former state to transform concurrent operations to a \em
 Nodes need it until each of them can no longer issue concurrent operations to the corresponding \emph{rename} operation.
 In other words, nodes can safely garbage collect the former state once the \emph{rename} operation became causally stable \cite{10.1007/978-3-662-43352-2_11}.
 Meanwhile, nodes can offload it onto the disk as it is only required to handle concurrent operations.
+
+In this section, we introduced our approach RenamableLogootSplit.
+We presented the behaviour of the \emph{rename} operation and how to deal with concurrent \emph{insert} and \emph{remove} operations.
+In the next section, we proceed to the evaluation of the proposed approach.
 
 \section{Evaluation}
 \label{sec:evaluation}
