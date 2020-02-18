@@ -596,9 +596,8 @@ Results are displayed in \autoref{fig:evolution-integration-time-rename} where t
 \end{figure}
 
 The main result of this benchmark is that the unit of time used when applying \emph{rename} operations is in hundreds of milliseconds.
-However other operations can not be integrated during the processing of \emph{rename} operations: remote operations won't be displayed to the user while local ones won't be propagated to others.
-\emph{Rename} operations can thus be perceived as latency peaks by users and degrade their experience if they are too long to process.
-It is necessary to take this concern into account when designing the strategy used to trigger \emph{rename} operations to avoid such cases.
+It is necessary to take this into account when designing the strategy used to trigger \emph{rename} operations in order to minimise their impact on the user experience, as they prevent the integration of other updates during this period.
+Further work is also needed to improve the performance of the operation.
 
 % In this section, we presented our experimental results.
 % These results demonstrate that RenamableLogootSplit outperforms LogootSplit and can reduce by hundreds the size of the document.
