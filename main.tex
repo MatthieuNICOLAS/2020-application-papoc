@@ -111,11 +111,11 @@
 To achieve high availability, large-scale distributed systems have to replicate data and to minimise coordination between nodes.
 Literature and industry increasingly adopt \acfp{CRDT} to design such systems.
 \acp{CRDT} are data types which behave as traditional ones, e.g. the Set or the Sequence.
-However, compared to traditional data types, they are designed to support natively concurrent modifications.
+However, when compared to traditional data types, they are designed to support natively concurrent modifications.
 To this end, they embed in their specification a conflict-resolution mechanism.
 
 To resolve conflicts in a deterministic manner, CRDTs usually attach identifiers to elements stored in the data structure.
-Identifiers have to comply with several constraints according to the kind of \ac{CRDT}, such as uniqueness or belonging to a dense order.
+Identifiers have to comply with several constraints, such as uniqueness or belonging to a dense order.
 These constraints may hinder the identifiers’ size from being bounded.
 As the system progresses, identifiers tend to grow.
 This inflation deepens the overhead of the \ac{CRDT} over time, leading to performance issues.
@@ -134,30 +134,30 @@ Experimental results demonstrate that this mechanism decreases the overhead of t
 In order to serve an ever-growing number of users and provide an increasing volume of data, large-scale systems such as data stores or collaborative editing tools adopt the \emph{eventual consistency} model \cite{10.1145/224057.224070}.
 This model ensures the high availability of the system, even in case of network partitions.
 To this end, it relaxes consistency constraints and minimises coordination between nodes.
-In this model, every node owns a copy of the data and can modify it.
-They then propagates updates to others.
-This model therefore enables replicas to temporarily diverge.
+In this model, every node owns a copy of the data, can modify it and propagate the updates to others.
+Therefore, replicas can temporarily diverge.
 To ensure that nodes converge eventually despite concurrently generated updates, a conflict resolution mechanism is required.
 
 Several approaches were introduced to design efficient conflict resolution mechanisms.
 The one we consider proposes to use \acfp{CRDT} \cite{shapiro_2011_crdt}.
 \acp{CRDT} are new specifications of abstract data types, e.g. the Set or the Sequence.
-However, compared to former ones, they are designed to support natively concurrent modifications.
+However, when compared to former ones, they are designed to support natively concurrent modifications.
 To this end, they embed a conflict-resolution mechanism directly in their specification.
 
 \acp{CRDT} appear as a keystone technology of a new paradigm of applications: Local-First Software \cite{10.1145/3359591.3359737}.
 They also have been proven a suitable approach to build distributed real-time collaborative editors \cite{doi:10.1002/cpe.4108}.
 Still, they exhibits some limitations.
-Especially in the context of real-time collaborative editing, the internal conflict resolution mechanism accumulates large amount of metadata as the collaboration goes on.
+Especially in the context of real-time collaborative editing, the internal conflict resolution mechanism accumulates a large amount of metadata over time.
 
 To address this particular issue, we propose a new \ac{CRDT} for Sequence which embeds a renaming mechanism.
 It enables to minimise the overhead of the data structure by discarding accumulated metadata eventually.
 
 This paper is organised as follows.
-Section \ref{sec:background} provides the necessary background to our approach.
+Section \ref{sec:background} provides the background of our approach.
 In \autoref{sec:proposition}, we introduce \emph{RenamableLogootSplit}, our new \ac{CRDT} for Sequence.
 Section \ref{sec:evaluation} presents the benchmarks we performed to evaluate our proposition and the obtained results.
-Finally, \autoref{sec:conclusion} concludes and introduces possible future works.
+In \autoref{sec:related-work}, we compare our approach to existing ones.
+Finally, \autoref{sec:conclusion} concludes and introduces possible future work.
 
 \section{Background}
 \label{sec:background}
@@ -169,7 +169,6 @@ The downside of this approach is an ever growing overhead, as it needs to keep r
 The second one \cite{5158449,WeissICDCS09,AndreCollaborateCom2013} avoids the need of tombstones by attaching identifiers from a dense totally ordered set to elements.
 Elements are ordered into the sequence by comparing their respective identifiers.
 However this approach suffers from an ever-increasing overhead, as the size of such dense totally ordered identifiers is variable and grows over time.
-
 In the context of this paper, we focus on the later approach.
 
 \subsection{LogootSplit}
@@ -259,14 +258,8 @@ These limitations cause the generation of new blocks.
 Since no mechanism to merge blocks a posteriori is provided, the sequence ends up fragmented into many blocks.
 The efficiency of the data structure decreases as each block introduces its own overhead.
 
-In our benchmarks, we measure that these issues eventually lead to the content representing a fraction of the whole data structure's size, less than 1\%, as shown in \autoref{fig:overhead-size}. It is thus necessary to address them.
-
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=0.55\columnwidth]{img/overhead-size.pdf}
-    \caption{Footprint of the data structure}
-    \label{fig:overhead-size}
-\end{figure}
+In our benchmarks, we measure that the content eventually represents less than 1\% of the data structure size, the remaining 99\% being metadata.
+It is thus necessary to address the previously highlighted issues.
 
 \section{Proposed approach}
 \label{sec:proposition}
@@ -274,7 +267,7 @@ In our benchmarks, we measure that these issues eventually lead to the content r
 We propose a new Sequence \ac{CRDT} belonging to the variable-size identifiers approach: \emph{RenamableLogootSplit} (RLS) \cite{nicolas:hal-01932552}.
 
 To address the limitations of LogootSplit, we embed in the data structure a renaming mechanism.
-The purpose of this mechanism is to reassign shorter identifiers to elements and to regroup them into blocks to minimise the memory overhead of the whole sequence.
+The purpose of this mechanism is to reassign shorter identifiers to elements and to group them into blocks to minimise the memory overhead of the whole sequence.
 
 To avoid costly and blocking consensus algorithms, we instead adopt the \emph{optimistic replication} \cite{10.1145/1057977.1057980} approach for our mechanism.
 Nodes perform renaming without any coordination.
@@ -285,7 +278,7 @@ If conflicts arise, we use \emph{operational transformations} \cite{10.1145/2894
 
 The system is composed of a dynamic set of nodes, as nodes join and leave dynamically the collaboration during its lifetime.
 Nodes collaborate to build and maintain a sequence using RenamableLogootSplit.
-Each node owns a copy of the sequence and edit it without any kind of coordination with others.
+Each node owns a copy of the sequence and edit it without any coordination.
 
 Nodes communicate through a \ac{P2P} network, which is unreliable.
 Messages can be lost, re-ordered or delivered multiple times.
@@ -300,7 +293,7 @@ Nodes use an anti-entropy mechanism to synchronise in a pairwise manner, by dete
 
 \label{sec:rename-op}
 
-\emph{RenamableLogootSplit} enables nodes to reduce the overhead of their replica by the means of a new operation: the \emph{rename} operation.
+Our \emph{rename} operation helps RenamableLogootSplit to reduce the overhead of nodes replica.
 This operation reassigns arbitrary identifiers to elements.
 
 \begin{figure}[ht!]
@@ -353,7 +346,7 @@ This operation reassigns arbitrary identifiers to elements.
 
 Its behaviour is illustrated in \autoref{fig:renaming} and can be described as follows:
 \begin{enumerate*}
-    \item It reuses the id of the first element of the sequence, but modified with the node's own id and sequence number (\autoref{fig:renaming-first-id})
+    \item It reuses the id of the first element of the sequence, but modified with the node's id and sequence number (\autoref{fig:renaming-first-id})
     \item It generates contiguous identifiers for all remaining elements (\autoref{fig:renaming-second-id}).
 \end{enumerate*}
 As we assign contiguous identifiers to all elements of the sequence, we eventually group them into one block as illustrated in \autoref{fig:renaming-final-state}.
@@ -367,11 +360,9 @@ To this end, the node issuing the \emph{rename} operation broadcasts its former 
 Using the former state, other nodes compute the new identifier of each renamed identifier.
 As for concurrently inserted identifiers, we will explain in \autoref{sec:dealing-with-concurrent-updates} how nodes rename them in a deterministic way.
 
-To limit bandwidth consumption of the renaming mechanism, we propose a compression technique.
-With this compression technique, nodes embed only necessary components to uniquely identify a block instead of whole identifiers in \emph{rename} operations.
-% Upon reception of the compressed operation, nodes computes the former state by browsing their current state and the concurrent \emph{remove} operations.
-This compression technique allows to reduce the metadata to broadcast to a fixed amount per block.
-Additionally, by issuing \emph{rename} operations as soon as the state reaches a given number of blocks, we can set an upper-bound to their size.
+To limit bandwidth consumption of \emph{rename} operations, we propose a compression technique to broadcast only necessary components to uniquely identify blocks instead of whole identifiers.
+It reduces the data to send to a fixed amount per block.
+Additionally, we can set an upper-bound to the size of \emph{rename} operations by issuing them as soon as the state reaches a given number of blocks.
 
 \subsection{Dealing with concurrent updates}
 
@@ -437,8 +428,7 @@ When nodes issue operations, they tag them with their current epoch.
 Upon the reception of an operation, nodes compare their current epoch to the operation's one.
 If they differ, nodes have to transform the operation before applying it.
 
-To transform an \emph{insert} or \emph{remove} operation, nodes use the algorithm described in \autoref{alg:renameId}.
-This algorithm enables nodes to transform identifiers against the \emph{rename} operation.
+\autoref{alg:renameId} enables nodes to transform \emph{insert} or \emph{remove} operations against the \emph{rename} one.
 The main idea of this algorithm is to use the predecessor of the given identifier to do so.
 The algorithm consists mainly in
 \begin{enumerate*}
@@ -484,7 +474,7 @@ An example of its usage is illustrated in \autoref{fig:concurrent-insert-rename-
 \end{algorithm}
 
 As explained in \autoref{sec:rename-op}, some nodes may have applied concurrent \emph{insert} operations to their state before receiving a given remote \emph{rename} operation.
-To rename these concurrently inserted identifiers, they also use \autoref{alg:renameId}.
+\autoref{alg:renameId} also solves this case.
 It allows them to eventually converge with nodes which processed the \emph{rename} operations before the concurrent \emph{insert} operations.
 
 Since nodes rely on the former state to transform concurrent operations to a \emph{rename} one, they have to store it.
@@ -492,10 +482,10 @@ Nodes need it until each of them can no longer issue concurrent operations to th
 In other words, nodes can safely garbage collect the former state once the \emph{rename} operation became causally stable \cite{10.1007/978-3-662-43352-2_11}.
 Meanwhile, nodes can offload it onto the disk as it is only required to handle concurrent operations.
 
-In this section, we introduced our approach RenamableLogootSplit.
-We presented how the \emph{rename} operation reassigns shorter identifiers to every elements to group them into one block and reduce the overhead of the data structure.
-We also showed how to transform concurrent \emph{insert} and \emph{remove} operations against the \emph{rename} one to resolve conflicts.
-In the next section, we proceed to the evaluation of the proposed approach.
+% In this section, we introduced our approach RenamableLogootSplit.
+% We presented how the \emph{rename} operation reassigns shorter identifiers to every elements to group them into one block and reduce the overhead of the data structure.
+% We also showed how to transform concurrent \emph{insert} and \emph{remove} operations against the \emph{rename} one to resolve conflicts.
+% In the next section, we proceed to the evaluation of the proposed approach.
 
 \section{Evaluation}
 \label{sec:evaluation}
@@ -512,17 +502,17 @@ In cases 1 and 2, we use LogootSplit as the baseline data structure to compare r
 
 % TODO: Reformuler cette phrase
 Since we were not able to retrieve an existing dataset of traces of real-time collaborative editing sessions, we ran simulations to generate traces to evaluate our data structure.
-The simulations depict the following scenario: several authors collaboratively write an article.
+The scenario is as follows: several authors collaboratively write an article.
 Initially, they mainly insert elements into the document.
 A few \emph{remove} operations are still issued to simulate spelling mistakes.
-Once the document reaches the critical length, collaborators switch to a second phase.
+Once the document reaches a critical length, collaborators switch to a second phase.
 From this point, they stop adding new content and focus on revamping existing parts instead.
 This is simulated by balancing the ratio between \emph{insert} and \emph{remove} operations.
 Each author has to perform a given number of operations and the collaboration ends once all of them received all operations.
 We take snapshots of the document at given steps of the collaboration to measure the evolution of the document.
 
-We ran these simulations with the following experimental settings: we deployed 10 bots as separate Docker containers on a single workstation.
-Each container corresponds to a single mono-threaded Node.js process (version 13.1.0) simulating an author.
+Simulations have been run with following experimental settings: we deployed 10 bots as separate Docker containers on a single workstation.
+Each container corresponds to a single mono-threaded Node.js process simulating an author.
 The bots share and edit collaboratively the document using either LogootSplit or RenamableLogootSplit according to the session.
 In both cases, each bot performs an \emph{insert} or a \emph{remove} operation locally every 200 $\pm$ 50ms.
 During the first phase, the probabilities for each operation of being an \emph{insert} or a \emph{remove} are respectively of 80\% and 20\%.
@@ -534,22 +524,14 @@ Snapshots are taken every 10k operations overall.
 Additionally, in the case of RenamableLogootSplit, one bot is arbitrarily designated as the master.
 It performs \emph{rename} operations every 30k operations overall.
 
-The code of the simulations is available at the following address: \url{https://github.com/coast-team/mute-bot-random/}.
-This repository also contains the code corresponding to the benchmarks described in the next subsections as well as the results obtained.
-
-\begin{sloppypar}
-Our implementation of LogootSplit and RenamableLogootSplit are available at \url{https://github.com/coast-team/mute-structs}.
-Both implementations represent the sequence using an AVL Tree, a self-balancing binary search tree.
-This data structure enables us to achieve \emph{insert} and \emph{remove} operations in logarithmic time.
-\end{sloppypar}
+Code, benchmarks and results presented in this section are available at the following address: \url{https://github.com/coast-team/mute-bot-random/}.
 
 \subsection{Results}
 
 \paragraph{Memory overhead}
 
-Using the snapshots generated, we compare the evolution of the size of the data structure in collaborative editing sessions.
-\autoref{fig:evolution-document-size} presents the results.
-On this plot, the blue line corresponds to the size of the content while the dash-dotted red one exhibits the growth of the LogootSplit data structure.
+Using the snapshots generated, we compare the evolution of the size of the data structure.
+Results are depicted in \autoref{fig:evolution-document-size} where the blue line corresponds to the size of the content while the dash-dotted red one exhibits the growth of the LogootSplit data structure.
 
 \begin{figure}[ht!]
     \centering
@@ -559,15 +541,14 @@ On this plot, the blue line corresponds to the size of the content while the das
 \end{figure}
 
 \begin{sloppypar}
-The dotted green line illustrates the growth of the RenamableLogootSplit document in its best-case scenario.
-In this scenario, \emph{rename} operations become stable as soon as they are issued.
+The dotted green line illustrates the growth of the RenamableLogootSplit document in its best-case scenario where \emph{rename} operations become stable as soon as they are issued.
 Former states can then be garbage collected safely, maximising the benefits of the \emph{renaming} mechanism.
 In this case, we observe that \emph{rename} operations reset the overhead of the data structure and eventually reduce by hundred times the document size compared to LogootSplit.
 \end{sloppypar}
 
-As for the dashed orange line, it represents RenamableLogootSplit worst-case scenario.
+The dashed orange line represents RenamableLogootSplit worst-case scenario.
 Here, we assume that \emph{rename} operations never become causally stable and that nodes have to store former states forever.
-However, obtained results show that RenamableLogootSplit outperforms LogootSplit and reduces by 66\% the size of the data structure, even in this case.
+However, obtained results show that RenamableLogootSplit still outperforms LogootSplit and reduces by 66\% the size of the data structure.
 This outcome is explained by the fact that the AVL does not only store the content and blocks corresponding to the sequence.
 Some metadata is actually added to the state to browse the sequence more efficiently when performing updates.
 When a \emph{rename} operation is applied, nodes only keep the sequence of blocks from the former state as an array to be able to transform concurrent operations.
@@ -575,10 +556,7 @@ Other metadata is scrapped, which results in this memory gain.
 
 \paragraph{Integration times of standard operations}
 
-\begin{sloppypar}
-We set up benchmarks to measure the impact of the renaming mechanism on the integration times of \emph{insert} and \emph{remove} operations.
-The obtained results are presented in \autoref{fig:evolution-integration-time-insert-remove}.
-\end{sloppypar}
+We also measure the impact of the renaming mechanism on the integration times of \emph{insert} and \emph{remove} operations.
 
 \begin{figure}[ht!]
     \begin{subfigure}{\columnwidth}
@@ -608,8 +586,7 @@ The results presented here show that the whole process is actually faster than a
 \paragraph{Integration time of \emph{rename} operation}
 
 Finally, we measured the integration time of the \emph{rename} operation according to the size of the document.
-Results are displayed in \autoref{fig:evolution-integration-time-rename}.
-In this figure, the blue line corresponds to the integration time of a \emph{local} rename operation while the dashed orange one corresponds to the integration time of a remote one.
+Results are displayed in \autoref{fig:evolution-integration-time-rename} where the blue line corresponds to the integration time of a \emph{local} rename operation while the dashed orange one corresponds to the integration time of a remote one.
 
 \begin{figure}[ht!]
     \centering
@@ -623,9 +600,17 @@ However other operations can not be integrated during the processing of \emph{re
 \emph{Rename} operations can thus be perceived as latency peaks by users and degrade their experience if they are too long to process.
 It is necessary to take this concern into account when designing the strategy used to trigger \emph{rename} operations to avoid such cases.
 
+% In this section, we presented our experimental results.
+% These results demonstrate that RenamableLogootSplit outperforms LogootSplit and can reduce by hundreds the size of the document.
+% They also show that
+% However, it comes at the price of an expensive but infrequent \emph{rename} operation.
+% In the next section, we present related work and compare our approach to them.
+
 \section{Related work}
 
-Over the years, several works were presented to reduce the growth of variable-size identifiers.
+\label{sec:related-work}
+
+Several works were presented to reduce the growth of variable-size identifiers.
 However, to the best of our knowledge, no work has been presented to decrease the number of blocks generated.
 
 \subsection{The core-nebula approach}
@@ -669,11 +654,9 @@ This new data structure embeds a renaming mechanism in its specification.
 It enables nodes to reassign shorter identifiers to elements and group them into one block to minimise the metadata.
 \end{sloppypar}
 
-\begin{sloppypar}
-Obtained results experiments shown that RenamableLogootSplit reduces the overhead of the data structure by hundreds times compared to LogootSplit in the best-case scenario.
-They also exhibited that it outperforms LogootSplit even in the worst-case.
+Experiments results showed that RenamableLogootSplit reduces the overhead of the data structure in both best-case (by hundreds times) and worst-case scenarios.
+% TODO: retravailler
 However, this comes at the price of an expensive but infrequent operation: the \emph{rename} operation.
-\end{sloppypar}
 
 As explained previously, \emph{rename} operations can be perceived by users as latency peaks if delayed for too long.
 In order to prevent such user experience deterioration, it is necessary to set an upper-bound to their integration time.
