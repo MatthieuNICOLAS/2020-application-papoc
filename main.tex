@@ -633,11 +633,11 @@ However, to simplify the system, it is possible to adopt the \emph{core-nebula} 
 \subsection{The LSEQ approach}
 
 In \cite{nedelec_2013_lseq,doi:10.1002/cpe.4108}, \citeauthor{nedelec_2013_lseq} introduce another approach to address the identifiers growth issue: LSEQ.
-Its insight consists in combining several strategies to select the \emph{position} value of a new tuple.
-These strategies prevent nodes from quickly saturating the space between two existing identifiers and having to increase the size of identifiers.
-This approach enables to decrease the growth of identifiers.
+Its insight consists in combining several strategies to generate new identifiers.
+It enables LSEQ to reduce the growth of identifiers from a linear progression to a polylogarithmic one.
 
 However, LSEQ does not prevent each inserted element to introduce its own overhead.
+The document continues to inflate with each insertion.
 On the other hand, our approach allows the metadata of the data structure to be periodically reset, regardless of the number of elements.
 
 As with the \emph{core-nebula} approach, it is possible to combine the LSEQ approach with ours.
