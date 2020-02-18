@@ -548,11 +548,11 @@ In this case, we observe that \emph{rename} operations reset the overhead of the
 
 The dashed orange line represents RenamableLogootSplit worst-case scenario.
 Here, we assume that \emph{rename} operations never become causally stable and that nodes have to store former states forever.
-However, obtained results show that RenamableLogootSplit still outperforms LogootSplit and reduces by 66\% the size of the data structure.
-This outcome is explained by the fact that the AVL does not only store the content and blocks corresponding to the sequence.
-Some metadata is actually added to the state to browse the sequence more efficiently when performing updates.
-When a \emph{rename} operation is applied, nodes only keep the sequence of blocks from the former state as an array to be able to transform concurrent operations.
-Other metadata is scrapped, which results in this memory gain.
+However, obtained results show that RenamableLogootSplit still outperforms LogootSplit and reduces by 66\% the overhead.
+This outcome is due to the change of data structure used to represent the state that takes place when applying a \emph{rename} operation.
+To perform updates efficiently, our implementation uses an AVL, a self-balancing tree, to represent the sequence.
+However, we no longer update the former state once it has been renamed but only query it to transform concurrent operations.
+We thus store it as an array, a more efficient memory-wise data structure, to save space.
 
 \paragraph{Integration times of standard operations}
 
