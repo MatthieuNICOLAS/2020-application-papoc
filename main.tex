@@ -195,7 +195,7 @@ We call \emph{contiguous} two identifiers which are identical but for their last
 LogootSplit is then able to group them into one block to minimise the metadata stored, as shown in \autoref{fig:logootsplit-seq-as-block}.
 
 \begin{figure}[ht!]
-    \begin{subfigure}{0.45\columnwidth}
+    \begin{subfigure}{0.38\columnwidth}
         \centering
         \begin{tikzpicture}
             \path
@@ -206,6 +206,7 @@ LogootSplit is then able to group them into one block to minimise the metadata s
         \caption{Elements with their corresponding identifiers}
         \label{fig:logootsplit-seq-as-letters}
     \end{subfigure}
+    \hspace{0.03\columnwidth}
     \begin{subfigure}{0.45\columnwidth}
         \centering
         \begin{tikzpicture}
@@ -590,7 +591,7 @@ Results are displayed in \autoref{fig:evolution-integration-time-rename} where t
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=\columnwidth]{img/integration-time-rename.pdf}
+    \includegraphics[width=0.9\columnwidth]{img/integration-time-rename.pdf}
     \caption{Integration time of rename operations}
     \label{fig:evolution-integration-time-rename}
 \end{figure}
@@ -617,7 +618,7 @@ In \cite{letia:hal-01248270,zawirski:hal-01248197}, authors design for Treedoc \
 Nodes rely on a consensus mechanism to trigger the renaming and a catch-up protocol to handle concurrent updates.
 Since consensus algorithms are costly in large-scale distributed systems with churn, \citet{letia:hal-01248270} introduce a two-tier architecture.
 Nodes are splitted between the \emph{core}, a set of stable and highly connected nodes, and the \emph{nebula} made of the remaining ones.
-Every node can update the sequence but only members of the \emph{core} participate in the consensus leading to renaming.
+Only members of the \emph{core} participate in the consensus leading to the renaming.
 
 While quite similar, our approach differs on several aspects.
 First, in the \emph{core-nebula} approach, nodes from the \emph{core} are unable to integrate concurrent operations to the \emph{rename} one.
