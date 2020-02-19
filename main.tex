@@ -184,14 +184,14 @@ These tuples have four components:
     \item a \emph{node sequence number} and
     \item an \emph{offset}, which are combined to make identifiers unique.
 \end{enumerate*}
-By comparing identifiers using the lexicographical order, LogootSplit is able to determine the element's position relatively to others.
+By comparing identifiers using the lexicographical order, LogootSplit is able to determine the position of the element relatively to others.
 In this paper, we represent identifiers using the following notation: \id{position}{node~id~node~seq}{offset} where $\trm{position}$ is a lowercase letter, $\trm{node~id}$ an uppercase one and both $\trm{node~seq}$ and $\trm{offset}$ integers.
 
 Instead of storing an identifier for each element of the sequence, the main insight of LogootSplit is to aggregate dynamically elements into blocks.
-Grouping elements into blocks enables LogootSplit to assign logically an identifier to each element while effectively storing only the block's length and its first element's identifier.
+Grouping elements into blocks enables LogootSplit to assign logically an identifier to each element while effectively storing only the block length and the identifier of its first element.
 LogootSplit gathers elements with \emph{contiguous} identifiers into a block.
 We call \emph{contiguous} two identifiers that are identical except for their last offset, and with both offsets being consecutive.
-\autoref{fig:logootsplit-seq} illustrates such a case: in \autoref{fig:logootsplit-seq-as-letters}, the elements' identifiers form a chain of contiguous identifiers.
+\autoref{fig:logootsplit-seq} illustrates such a case: in \autoref{fig:logootsplit-seq-as-letters}, the element identifiers form a chain of contiguous identifiers.
 LogootSplit is then able to group them into one block to minimise the metadata stored, as shown in \autoref{fig:logootsplit-seq-as-block}.
 
 \begin{figure}[ht!]
@@ -229,7 +229,7 @@ As stated previously, the size of identifiers from a dense totally ordered set i
 When nodes insert new elements between two others with the same \emph{position} value, LogootSplit has no other option than to increase the size of the resulting identifiers.
 \autoref{fig:example-split} illustrates such cases.
 In this example, since the node inserts a new element between contiguous identifiers, LogootSplit is not able to generate a fitting identifier of the same size.
-To comply with the intended order, LogootSplit generates a new identifier by appending to the predecessor's one a new tuple.
+To comply with the intended order, LogootSplit generates a new identifier by appending a new tuple to the identifier of the predecessor.
 
 \begin{figure}[ht!]
     \centering
@@ -254,7 +254,7 @@ This also increases the bandwidth consumption as nodes have to broadcast identif
 
 Additionally, as the lifetime of the replicated sequence increases, the number of blocks composing it grows as well.
 Indeed, several constraints on identifier generation prevent nodes from adding new elements to existing blocks.
-For example, only the block's author can append or prepend elements to it.
+For example, only the node that generated the block can append or prepend elements to it.
 These limitations cause the generation of new blocks.
 Since no mechanism to merge blocks a posteriori is provided, the sequence ends up fragmented into many blocks.
 The efficiency of the data structure decreases as each block introduces its own overhead.
@@ -347,7 +347,7 @@ This operation reassigns arbitrary identifiers to elements.
 
 Its behaviour is illustrated in \autoref{fig:renaming} and can be described as follows:
 \begin{enumerate*}
-    \item It reuses the id of the first element of the sequence, but modified with the node's id and sequence number (\autoref{fig:renaming-first-id})
+    \item It reuses the id of the first element of the sequence, but modified with the node id and sequence number (\autoref{fig:renaming-first-id})
     \item It generates contiguous identifiers for all remaining elements (\autoref{fig:renaming-second-id}).
 \end{enumerate*}
 As we assign contiguous identifiers to all elements of the sequence, we eventually group them into one block as illustrated in \autoref{fig:renaming-final-state}.
@@ -426,7 +426,7 @@ To detect them, we use an \emph{epoch-based} system.
 We add an \emph{epoch} to the sequence as a property.
 Each time a \emph{rename} operation is applied, the sequence progresses to a new epoch.
 When nodes issue operations, they tag them with their current epoch.
-Upon the reception of an operation, nodes compare their current epoch to the operation's one.
+Upon the reception of an operation, nodes compare the epoch of the operation to their current one.
 If they differ, nodes have to transform the operation before applying it.
 
 \autoref{alg:renameId} enables nodes to transform \emph{insert} or \emph{remove} operations against the \emph{rename} one.
@@ -577,7 +577,7 @@ We also measure the impact of the renaming mechanism on the integration times of
 \end{figure}
 
 \autoref{fig:evolution-integration-time-local-insert-remove} displays the integration times of local operations while \autoref{fig:evolution-integration-time-remote-insert-remove} exhibits remote ones.
-In both cases, the light orange boxplots correspond to LogootSplit's integration times while dark blue ones to RenamableLogootSplit's ones.
+In both cases, the light orange boxplots correspond to integration times of LogootSplit while dark blue ones to the integration times of RenamableLogootSplit.
 The results show that the \emph{renaming} mechanism allows to reduce the integration times of future operations.
 
 In \autoref{fig:evolution-integration-time-remote-insert-remove}, the white boxplots display the integration times of concurrent operations to a \emph{rename} one.
