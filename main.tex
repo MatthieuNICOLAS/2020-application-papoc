@@ -426,7 +426,7 @@ To detect them, we use an \emph{epoch-based} system.
 We add an \emph{epoch} to the sequence as a property.
 Each time a \emph{rename} operation is applied, the sequence progresses to a new epoch.
 When nodes issue operations, they tag them with their current epoch.
-Upon the reception of an operation, nodes compare the epoch of the operation to their current one.
+Upon the reception of an operation, nodes compare the operation epoch to their current one.
 If they differ, nodes have to transform the operation before applying it.
 
 \autoref{alg:renameId} enables nodes to transform \emph{insert} or \emph{remove} operations against the \emph{rename} one.
@@ -496,7 +496,7 @@ Meanwhile, nodes can offload it onto the disk as it is only required to handle c
 To validate the proposed renaming mechanism, we performed an experimental evaluation to measure its performance on several aspects:
 \begin{enumerate*}
     \item the size of the data structure
-    \item the integration time of \emph{insert} and \emph{remove} operations
+    \item the integration times of \emph{insert} and \emph{remove} operations
     \item the integration time of the \emph{rename} operation.
 \end{enumerate*}
 In cases 1 and 2, we use LogootSplit as the baseline data structure to compare results.
@@ -586,8 +586,8 @@ The results presented here show that the whole process is actually faster than a
 
 \paragraph{Integration time of \emph{rename} operation}
 
-Finally, we measured the integration time of the \emph{rename} operation according to the size of the document.
-Results are displayed in \autoref{fig:evolution-integration-time-rename} where the blue line corresponds to the integration time of a \emph{local} rename operation while the dashed orange one corresponds to the integration time of a remote one.
+Finally, we measured the integration times of \emph{rename} operations according to the size of the document.
+Results are displayed in \autoref{fig:evolution-integration-time-rename} where the blue line corresponds to the integration times of local \emph{rename} operations while the dashed orange one corresponds to the integration times of remote ones.
 
 \begin{figure}[ht!]
     \centering
@@ -655,7 +655,7 @@ Experiments results showed that RenamableLogootSplit reduces the overhead of the
 \end{sloppypar}
 
 Regarding future work, we now have to design an efficient strategy used to trigger \emph{rename} operations while minimising their impact on the user experience.
-User behaviour studies, inspired by \cite{ignat:hal-01088815,ignat:hal-01238831}, could be led in the context of real-time collaborative writing to set an acceptable upper-bound to their integration time.
+User behaviour studies, inspired by \cite{ignat:hal-01088815,ignat:hal-01238831}, could be led in the context of real-time collaborative writing to set an acceptable upper-bound to their integration times.
 
 Finally, we designed RenamableLogootSplit with fully distributed systems in mind.
 However, for the sake of brevity, we presented it in this paper under the assumption that no concurrent \emph{rename} operations were issued.
