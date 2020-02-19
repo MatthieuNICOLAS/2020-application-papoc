@@ -190,7 +190,7 @@ In this paper, we represent identifiers using the following notation: \id{positi
 Instead of storing an identifier for each element of the sequence, the main insight of LogootSplit is to aggregate dynamically elements into blocks.
 Grouping elements into blocks enables LogootSplit to assign logically an identifier to each element while effectively storing only the block's length and its first element's identifier.
 LogootSplit gathers elements with \emph{contiguous} identifiers into a block.
-We call \emph{contiguous} two identifiers which are identical but for their last offset, and with the first one’s offset being the predecessor of the second one's.
+We call \emph{contiguous} two identifiers that are identical except for their last offset, and with both offsets being consecutive.
 \autoref{fig:logootsplit-seq} illustrates such a case: in \autoref{fig:logootsplit-seq-as-letters}, the elements' identifiers form a chain of contiguous identifiers.
 LogootSplit is then able to group them into one block to minimise the metadata stored, as shown in \autoref{fig:logootsplit-seq-as-block}.
 
