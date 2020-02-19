@@ -524,7 +524,7 @@ Snapshots are taken every 10k operations overall.
 Additionally, in the case of RenamableLogootSplit, one bot is arbitrarily designated as the master.
 It performs \emph{rename} operations every 30k operations overall.
 
-Code, benchmarks and results presented in this section are available at the following address: \url{https://github.com/coast-team/mute-bot-random/}.
+Code, benchmarks and results are available at: \url{https://github.com/coast-team/mute-bot-random/}.
 
 \subsection{Results}
 
@@ -596,8 +596,7 @@ Results are displayed in \autoref{fig:evolution-integration-time-rename} where t
 \end{figure}
 
 The main result of this benchmark is that the unit of time used when applying \emph{rename} operations is in hundreds of milliseconds.
-It is necessary to take this into account when designing the strategy used to trigger \emph{rename} operations in order to minimise their impact on the user experience, as they prevent the integration of other updates during this period.
-Further work is also needed to improve the performance of the operation.
+It is necessary to take this into account when designing the strategy used to trigger \emph{rename} operations in order to minimise the impact of integration times on the user experience.
 
 % In this section, we presented our experimental results.
 % These results demonstrate that RenamableLogootSplit outperforms LogootSplit and can reduce by hundreds the size of the document.
@@ -651,9 +650,8 @@ It would enable to reduce the frequency of the expensive \emph{rename} operation
 In this paper, we introduced a novel Sequence \ac{CRDT} belonging to the variable-size identifiers approach: RenamableLogootSplit.
 This new data structure embeds a renaming mechanism in its specification.
 It enables nodes to reassign shorter identifiers to elements and group them into one block to minimise the metadata.
-\end{sloppypar}
-
 Experiments results showed that RenamableLogootSplit reduces the overhead of the data structure in both best-case (by hundreds times) and worst-case scenarios.
+\end{sloppypar}
 
 Regarding future work, we now have to design an efficient strategy used to trigger \emph{rename} operations while minimising their impact on the user experience.
 User behaviour studies, inspired by \cite{ignat:hal-01088815,ignat:hal-01238831}, could be led in the context of real-time collaborative writing to set an acceptable upper-bound to their integration time.
