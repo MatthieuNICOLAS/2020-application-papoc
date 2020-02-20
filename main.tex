@@ -559,6 +559,10 @@ We thus store it as an array, a more efficient memory-wise data structure, to sa
 
 We also measure the impact of the renaming mechanism on the integration times of \emph{insert} and \emph{remove} operations.
 
+\autoref{fig:evolution-integration-time-local-insert-remove} displays the integration times of local operations while \autoref{fig:evolution-integration-time-remote-insert-remove} exhibits remote ones.
+In both cases, the light orange boxplots correspond to integration times of LogootSplit while dark blue ones to the integration times of RenamableLogootSplit.
+The results show that the \emph{renaming} mechanism allows to reduce the integration times of future operations.
+
 \begin{figure}[ht!]
     \begin{subfigure}{\columnwidth}
         \centering
@@ -575,10 +579,6 @@ We also measure the impact of the renaming mechanism on the integration times of
     \caption{Integration time of standard operations}
     \label{fig:evolution-integration-time-insert-remove}
 \end{figure}
-
-\autoref{fig:evolution-integration-time-local-insert-remove} displays the integration times of local operations while \autoref{fig:evolution-integration-time-remote-insert-remove} exhibits remote ones.
-In both cases, the light orange boxplots correspond to integration times of LogootSplit while dark blue ones to the integration times of RenamableLogootSplit.
-The results show that the \emph{renaming} mechanism allows to reduce the integration times of future operations.
 
 In \autoref{fig:evolution-integration-time-remote-insert-remove}, the white boxplots display the integration times of concurrent operations to a \emph{rename} one.
 As illustrated in \autoref{sec:dealing-with-concurrent-updates}, these operations require to be transformed before being applied to the renamed state.
@@ -609,7 +609,7 @@ It is necessary to take this into account when designing the strategy used to tr
 
 \label{sec:related-work}
 
-Several works were presented to reduce the growth of variable-size identifiers.
+Several approaches have been proposed to reduce the growth of variable-size identifiers.
 However, to the best of our knowledge, no work has been presented to decrease the number of blocks generated.
 
 \subsection{The core-nebula approach}
