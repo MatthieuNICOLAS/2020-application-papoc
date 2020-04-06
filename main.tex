@@ -1,4 +1,4 @@
-\documentclass[sigplan,10pt]{acmart}
+\documentclass[sigplan,10pt,authorversion]{acmart}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -107,7 +107,13 @@
   \country{France}
 }
 
-\acmConference[PaPoC '20]{7th Workshop on Principles and Practice of Consistency for Distributed Data}{April 27, 2020}{Heraklion, Crete, Greece}
+% Pre-print settings
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{} % removes footnote with conference information in first column
+\pagestyle{plain} % removes running headers
+
+% PaPoc'20 settings
+% \acmConference[PaPoC '20]{7th Workshop on Principles and Practice of Consistency for Distributed Data}{April 27, 2020}{Heraklion, Crete, Greece}
 
 \begin{abstract}
 To achieve high availability, large-scale distributed systems have to replicate data and to minimise coordination between nodes.
@@ -322,7 +328,9 @@ This operation reassigns arbitrary identifiers to elements.
                 to ++(0:\widthletter) node[letter, fill=mydarkorange, label=above:{\color{mydarkorange}\id{i}{B0}{0}\id{f}{A0}{0}}] {E}
                 to ++(0:\widthletter) node[block, label=below:{\id{i}{B0}{1..2}}] (LO) {LO}
                 to ++(0:4 * \widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0}}] (H) {H}
-                to ++(0:\widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{1}}] {E};
+                to ++(0:\widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{1}}] {E}
+                to ++(0:\widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{2}}] {L}
+                to ++(0:\widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{3}}] {0};
 
             \draw[->, thick] (LO) -- node[below, align=center]{\emph{rename}} (H);
         \end{tikzpicture}
@@ -343,15 +351,16 @@ This operation reassigns arbitrary identifiers to elements.
         \caption{Final state obtained}
         \label{fig:renaming-final-state}
     \end{subfigure}
-    \caption{Renaming the sequence}
+    \caption{Renaming the sequence on node \emph{A}}
     \label{fig:renaming}
 \end{figure}
 
-Its behaviour is illustrated in \autoref{fig:renaming} and can be described as follows:
-\begin{enumerate*}
-    \item It reuses the id of the first element of the sequence, but modified with the node id and sequence number (\autoref{fig:renaming-first-id})
-    \item It generates contiguous identifiers for all remaining elements (\autoref{fig:renaming-second-id}).
-\end{enumerate*}
+Its behaviour is illustrated in \autoref{fig:renaming}.
+In this example, node A initiates a \emph{rename} operation on its local state.
+First, node A reuses the id of the first element of the sequence (\id{i}{B0}{0}) but modifies it with its own node id (\textbf{A}) and current sequence number (\emph{1}).
+Also the offset is set to 0.
+Node A reassigns the resulting id (\id{i}{A1}{0}) to the first element of the sequence as described in \autoref{fig:renaming-first-id}.
+Then, node A derivates contiguous identifiers for all remaining elements by successively incrementing the offset (\id{i}{A1}{1}, \id{i}{A1}{2} and \id{i}{A1}{3}), as shown in \autoref{fig:renaming-second-id}.
 As we assign contiguous identifiers to all elements of the sequence, we eventually group them into one block as illustrated in \autoref{fig:renaming-final-state}.
 It allows nodes to benefit the most from the block feature and to minimise the overhead of the resulting state.
 
