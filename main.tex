@@ -419,13 +419,13 @@ If they differ, nodes have to transform the operation before applying it.
 
 \autoref{alg:renameId} enables nodes to transform \emph{insert} or \emph{remove} operations against the \emph{rename} one.
 The main idea of this algorithm is to use the predecessor of the given identifier to do so.
-The algorithm consists mainly in
-\begin{enumerate*}
-    \item finding the predecessor of the given id in the former state
-    \item computing its counterpart in the renamed state
-    \item prepending it to the given id to generate the renamed id.
-\end{enumerate*}
 An example of its usage is illustrated in \autoref{fig:concurrent-insert-rename-fixed}.
+This figure depicts the same scenario as in \autoref{fig:concurrent-insert-rename-inconsistent}, except that this time node A uses \autoref{alg:renameId} to rename the concurrently generated id before inserting it in its state.
+The algorithm proceeds as follows.
+First, node A retrieves the predecessor of the given id \id{i}{B0}{0}\id{m}{B1}{0} in the former state: \id{i}{B0}{0}\id{f}{A0}{0}.
+Then it computes the counterpart of \id{i}{B0}{0}\id{f}{A0}{0} in the renamed state: \id{i}{A1}{1}.
+Finally, node A prepends it to the given id to generate the renamed id: \id{i}{A1}{1}\id{i}{B0}{0}\id{m}{B1}{0}.
+By reassigning this id to the concurrently added element, node A is able to insert it in its state while preserving the intended order.
 
 \begin{figure}
     \centering
@@ -447,7 +447,7 @@ An example of its usage is illustrated in \autoref{fig:concurrent-insert-rename-
 
         \draw[dashed, ->, thick] (left.north) .. controls +(90:2 * \widthletter) and +(270:2 * \widthletter) .. node[below right, align=center]{\emph{rename}\\ \emph{then insert}}(right.south);
     \end{tikzpicture}
-    \caption{Fixed scenario}
+    \caption{Renaming concurrent update using \autoref{alg:renameId} before applying it to maintain intended order}
     \label{fig:concurrent-insert-rename-fixed}
 \end{figure}
 
