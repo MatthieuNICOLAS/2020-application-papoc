@@ -332,9 +332,9 @@ This operation reassigns arbitrary identifiers to elements.
                 to ++(0:\widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{2}}] {L}
                 to ++(0:\widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{3}}] {0};
 
-            \draw[->, thick] (LO) -- node[below, align=center]{\emph{rename}} (H);
-        \end{tikzpicture}
-        \caption{Selecting the new identifier of the second one}
+                \draw[->, thick] (LO) -- node[below, align=center]{\emph{rename}} (H);
+            \end{tikzpicture}
+            \caption{Selecting the new identifiers of the remaining ones}
         \label{fig:renaming-second-id}
     \end{subfigure}
     \begin{subfigure}{\columnwidth}
@@ -381,56 +381,33 @@ Additionally, we can set an upper-bound to the size of \emph{rename} operations 
 \label{sec:dealing-with-concurrent-updates}
 
 As \emph{rename} operations can be issued without any kind of coordination, it is possible for other nodes to perform updates concurrently.
-Since identifiers are modified by the \emph{renaming} mechanism, applying naively concurrent updates would result in inconsistencies as illustrated in \autoref{fig:concurrent-insert-rename-inconsistent}.
+Figure \ref{fig:concurrent-insert-rename-inconsistent} illustrates such cases.
+In this example node B inserts the new element "L", assigns the id \id{i}{B0}{0}\id{m}{B1}{0} to it and broadcasts its update, concurrently to the \emph{rename} operation described in \autoref{fig:renaming}.
+Upon reception of the \emph{insert} operation, node A adds the inserted element into its sequence, using the element id to determine its position.
+However, since identifiers were modified by the concurrent \emph{rename} operation, node A inserts the new element at the end of its sequence (since \id{i}{A1}{3} < \id{i}{B0}{0}\id{m}{B1}{0}) instead of at the intended position.
+As described by this example, applying naively concurrent updates would result in inconsistencies.
 It is thus necessary to handle concurrent operations to \emph{rename} operations in a particular manner.
 
 \begin{figure}[ht!]
-    \begin{subfigure}{\columnwidth}
-        \centering
-        \begin{tikzpicture}
-            \path
-                node {\textbf{A}}
-                to ++(0:2 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..3}}] (HELO) {HELO}
-                to ++(0:4 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..3}}]  {HELO}
-                to ++(0:\widthblock) node[cross, letter, fill=mylightorange, label=above:{\color{mylightorange}\id{i}{B0}{0}\id{m}{B1}{0}}] (right) {L};
+    \centering
+    \begin{tikzpicture}
+        \path
+            node {\textbf{A}}
+            to ++(0:2 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..3}}] (HELO) {HELO}
+            to ++(0:4 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..3}}]  {HELO}
+            to ++(0:\widthblock) node[cross, letter, fill=mylightorange, label=above:{\color{mylightorange}\id{i}{B0}{0}\id{m}{B1}{0}}] (right) {L};
 
-            \path
-                to ++(270:2) node {\textbf{B}}
-                to ++(0:\widthletter) node[letter, label=below:{\id{i}{B0}{0}}] {H}
-                to ++(0:\widthletter) node[letter, fill=mydarkorange, label=above:{\color{mydarkorange}\id{i}{B0}{0}\id{f}{A0}{0}}] {E}
-                to ++(0:\widthletter) node[letter, fill=mylightorange, label=below:{\color{mylightorange}\id{i}{B0}{0}\id{m}{B1}{0}}] (left) {L}
-                to ++(0:\widthletter) node[block, label=below:{\id{i}{B0}{1..2}}] {LO};
+        \path
+            to ++(270:2) node {\textbf{B}}
+            to ++(0:\widthletter) node[letter, label=below:{\id{i}{B0}{0}}] {H}
+            to ++(0:\widthletter) node[letter, fill=mydarkorange, label=above:{\color{mydarkorange}\id{i}{B0}{0}\id{f}{A0}{0}}] {E}
+            to ++(0:\widthletter) node[letter, fill=mylightorange, label=below:{\color{mylightorange}\id{i}{B0}{0}\id{m}{B1}{0}}] (left) {L}
+            to ++(0:\widthletter) node[block, label=below:{\id{i}{B0}{1..2}}] {LO};
 
-            \draw[dashed, ->, thick] (left.north) .. controls +(90:2 * \widthletter) and +(270:2 * \widthletter) .. node[below right, align=center]{\emph{insert}} (right.south);
-        \end{tikzpicture}
-        \caption{Concurrent update leading to inconsistency}
-        \label{fig:concurrent-insert-rename-inconsistent}
-    \end{subfigure}
-    \begin{subfigure}{\columnwidth}
-        \centering
-        \begin{tikzpicture}
-            \path
-                node {\textbf{A}}
-                to ++(0:2 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..3}}] (HELO) {HELO}
-                to ++(0:4 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..1}}]  {HE}
-                to ++(0:\widthblock) node[letter, fill=mylightblue, label=above:{\color{mylightblue!20!mydarkblue}\id{i}{A1}{1}\id{i}{B0}{0}\id{m}{B1}{0}}] (right) {L}
-                to ++(0:\widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{2..3}}]  {LO};
-
-
-            \path
-                to ++(270:2) node {\textbf{B}}
-                to ++(0:\widthletter) node[letter, label=below:{\id{i}{B0}{0}}] {H}
-                to ++(0:\widthletter) node[letter, fill=mydarkorange, label=above:{\color{mydarkorange}\id{i}{B0}{0}\id{f}{A0}{0}}] {E}
-                to ++(0:\widthletter) node[letter, fill=mylightorange, label=below:{\color{mylightorange}\id{i}{B0}{0}\id{m}{B1}{0}}] (left) {L}
-                to ++(0:\widthletter) node[block, label=below:{\id{i}{B0}{1..2}}] {LO};
-
-            \draw[dashed, ->, thick] (left.north) .. controls +(90:2 * \widthletter) and +(270:2 * \widthletter) .. node[below right, align=center]{\emph{rename}\\ \emph{then insert}}(right.south);
-        \end{tikzpicture}
-        \caption{Fixed scenario}
-        \label{fig:concurrent-insert-rename-fixed}
-    \end{subfigure}
-    \caption{Dealing with concurrent updates}
-    \label{fig:concurrent-insert-rename}
+        \draw[dashed, ->, thick] (left.north) .. controls +(90:2 * \widthletter) and +(270:2 * \widthletter) .. node[below right, align=center]{\emph{insert}} (right.south);
+    \end{tikzpicture}
+    \caption{Concurrent update leading to inconsistency}
+    \label{fig:concurrent-insert-rename-inconsistent}
 \end{figure}
 
 To detect them, we use an \emph{epoch-based} system.
@@ -449,6 +426,30 @@ The algorithm consists mainly in
     \item prepending it to the given id to generate the renamed id.
 \end{enumerate*}
 An example of its usage is illustrated in \autoref{fig:concurrent-insert-rename-fixed}.
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \path
+            node {\textbf{A}}
+            to ++(0:2 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..3}}] (HELO) {HELO}
+            to ++(0:4 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..1}}]  {HE}
+            to ++(0:\widthblock) node[letter, fill=mylightblue, label=above:{\color{mylightblue!20!mydarkblue}\id{i}{A1}{1}\id{i}{B0}{0}\id{m}{B1}{0}}] (right) {L}
+            to ++(0:\widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{2..3}}]  {LO};
+
+
+        \path
+            to ++(270:2) node {\textbf{B}}
+            to ++(0:\widthletter) node[letter, label=below:{\id{i}{B0}{0}}] {H}
+            to ++(0:\widthletter) node[letter, fill=mydarkorange, label=above:{\color{mydarkorange}\id{i}{B0}{0}\id{f}{A0}{0}}] {E}
+            to ++(0:\widthletter) node[letter, fill=mylightorange, label=below:{\color{mylightorange}\id{i}{B0}{0}\id{m}{B1}{0}}] (left) {L}
+            to ++(0:\widthletter) node[block, label=below:{\id{i}{B0}{1..2}}] {LO};
+
+        \draw[dashed, ->, thick] (left.north) .. controls +(90:2 * \widthletter) and +(270:2 * \widthletter) .. node[below right, align=center]{\emph{rename}\\ \emph{then insert}}(right.south);
+    \end{tikzpicture}
+    \caption{Fixed scenario}
+    \label{fig:concurrent-insert-rename-fixed}
+\end{figure}
 
 \begin{algorithm}
     \caption{Rename concurrently generated identifier}
