@@ -69,7 +69,8 @@
 \acrodef{CRDT}[CRDT]{Conflict-free Replicated Data Type}
 \acrodefplural{CRDT}[CRDTs]{Conflict-free Replicated Data Types}
 \acrodef{JIT}[JIT]{Just-In-Time}
-\acrodef{OT}[OT]{Operational Transform}
+\acrodef{OT}[OT]{Operational Transformation}
+\acrodefplural{OT}[OT]{Operational Transformations}
 \acrodef{P2P}[P2P]{Peer-to-Peer}
 \acrodef{SEC}[SEC]{Strong Eventual Consistency}
 
@@ -281,7 +282,7 @@ The purpose of this mechanism is to reassign shorter identifiers to elements and
 To avoid costly and blocking consensus algorithms, we instead adopt the \emph{optimistic replication} \cite{10.1145/1057977.1057980} approach for our mechanism.
 Nodes perform renaming without any coordination.
 However, this operation is not intrinsically commutative with others.
-If conflicts arise, we use \emph{operational transformations} \cite{10.1145/289444.289469,4668339} to enable nodes to resolve them deterministically.
+If conflicts arise, we use \emph{Operational Transformations} (OT) \cite{10.1145/289444.289469,4668339} to enable nodes to resolve them deterministically.
 
 \subsection{System Model}
 
@@ -669,10 +670,13 @@ It would enable to reduce the frequency of the expensive \emph{rename} operation
 In this paper, we introduced a novel Sequence \ac{CRDT} belonging to the variable-size identifiers approach: RenamableLogootSplit.
 This new data structure embeds a renaming mechanism in its specification.
 It enables nodes to reassign shorter identifiers to elements and group them into one block to minimise the metadata.
-Experiments results showed that RenamableLogootSplit reduces the overhead of the data structure in both best-case (by hundreds times) and worst-case scenarios.
+Experiments results provided an empirical validation of the correctness of RenamableLogootSplit and showed that it reduces the overhead of the data structure in both best-case (by hundreds times) and worst-case scenarios.
 \end{sloppypar}
 
-Regarding future work, we now have to design an efficient strategy used to trigger \emph{rename} operations while minimising their impact on the user experience.
+Regarding future work, we would like to present a formal proof of the correctness of RenamableLoogotSplit.
+A related work would be to generalise and formalise the model described in this work, i.e. an approach combining \ac{CRDT} and OT techniques.
+
+Additionally, we now have to design an efficient strategy used to trigger \emph{rename} operations while minimising their impact on the user experience.
 User behaviour studies, inspired by \cite{ignat:hal-01088815,ignat:hal-01238831}, could be led in the context of real-time collaborative writing to set an acceptable upper-bound to their integration times.
 
 Finally, we designed RenamableLogootSplit with fully distributed systems in mind.
