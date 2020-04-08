@@ -541,9 +541,15 @@ Code, benchmarks and results are available at: \url{https://github.com/coast-tea
 
 \subsection{Results}
 
+\paragraph{Convergence}
+
+Using the generated snapshots, we compare the final content of nodes per session.
+In this way, we were able to confirm that nodes eventually converge without any communication other than operations, thus satisfying the \ac{SEC} consistency model.
+This enables us to obtain a first validation of the correctness of RenamableLogootSplit in an empirical manner.
+
 \paragraph{Memory overhead}
 
-Using the snapshots generated, we compare the evolution of the size of the data structure.
+We then compare the evolution of the size of the data structure.
 Results are depicted in \autoref{fig:evolution-document-size} where the blue line corresponds to the size of the content while the dash-dotted red one exhibits the growth of the LogootSplit data structure.
 
 \begin{figure}[ht!]
@@ -598,7 +604,7 @@ The results presented here show that the whole process is actually faster than a
 
 \paragraph{Integration time of \emph{rename} operation}
 
-Finally, we measured the integration times of \emph{rename} operations according to the size of the document.
+Finally, we measure the integration times of \emph{rename} operations according to the size of the document.
 Results are displayed in \autoref{fig:evolution-integration-time-rename} where the blue line corresponds to the integration times of local \emph{rename} operations while the dashed orange one corresponds to the integration times of remote ones.
 
 \begin{figure}[ht!]
