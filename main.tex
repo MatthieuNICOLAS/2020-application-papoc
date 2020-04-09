@@ -574,8 +574,8 @@ Code, benchmarks and results are available at: \url{https://github.com/coast-tea
 \paragraph{Convergence}
 
 Using the generated snapshots, we compare the final content of nodes per session.
-In this way, we were able to confirm that nodes eventually converge without any communication other than operations, thus satisfying the \ac{SEC} consistency model.
-This enables us to obtain a first validation of the correctness of RenamableLogootSplit in an empirical manner.
+In this way, we can confirm that nodes eventually converge without any communication other than operations, thus satisfying the \ac{SEC} consistency model.
+Although empirical, this result represents a first step in the validation of the correctness of RenamableLogootSplit.
 
 \paragraph{Memory overhead}
 
@@ -702,8 +702,11 @@ It enables nodes to reassign shorter identifiers to elements and group them into
 Experiments results provided an empirical validation of the correctness of RenamableLogootSplit and showed that it reduces the overhead of the data structure in both best-case (by hundreds times) and worst-case scenarios.
 \end{sloppypar}
 
-Regarding future work, we would like to present a formal proof of the correctness of RenamableLoogotSplit.
+Regarding future work, we would like to present a formal proof of the correctness of RenamableLogootSplit.
 A related work would be to generalise and formalise the model described in this work, i.e. an approach combining \ac{CRDT} and OT techniques.
+
+% A working trail/research trail
+% Comment les techniques d'OT s'insèrent dans les CRDTs
 
 Additionally, we now have to design an efficient strategy used to trigger \emph{rename} operations while minimising their impact on the user experience.
 User behaviour studies, inspired by \cite{ignat:hal-01088815,ignat:hal-01238831}, could be led in the context of real-time collaborative writing to set an acceptable upper-bound to their integration times.
