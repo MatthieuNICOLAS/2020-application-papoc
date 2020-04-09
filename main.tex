@@ -21,9 +21,10 @@
 \definecolor{vlight}{gray}{.95}
 \definecolor{darkgreen}{rgb}{0.0, 0.2, 0.13}
 \definecolor{mydarkblue}{RGB}{116,173,209}
+\definecolor{mydarkblueid}{RGB}{83,154,198}
 \definecolor{mylightblue}{RGB}{171,217,233}
 \definecolor{mydarkorange}{RGB}{244,109,67}
-\definecolor{mylightorange}{RGB}{253,174,97}
+\definecolor{mylightorange}{RGB}{252,153,54}
 \definecolor{mydarkred}{RGB}{215,48,39}
 }
 
@@ -344,7 +345,7 @@ This operation reassigns arbitrary identifiers to elements.
                 to ++(0:\widthletter) node[letter, label=below:{\id{i}{B0}{0}}] {H}
                 to ++(0:\widthletter) node[letter, fill=mydarkorange, label=above:{\color{mydarkorange}\id{i}{B0}{0}\id{f}{A0}{0}}] {E}
                 to ++(0:\widthletter) node[block, label=below:{\id{i}{B0}{1..2}}] (LO) {LO}
-                to ++(0:4 * \widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0}}] (H) {H};
+                to ++(0:4 * \widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblueid}\id{i}{A1}{0}}] (H) {H};
 
             \draw[->, thick] (LO) -- node[below, align=center]{\emph{rename}} (H);
         \end{tikzpicture}
@@ -358,10 +359,10 @@ This operation reassigns arbitrary identifiers to elements.
                 to ++(0:\widthletter) node[letter, label=below:{\id{i}{B0}{0}}] {H}
                 to ++(0:\widthletter) node[letter, fill=mydarkorange, label=above:{\color{mydarkorange}\id{i}{B0}{0}\id{f}{A0}{0}}] {E}
                 to ++(0:\widthletter) node[block, label=below:{\id{i}{B0}{1..2}}] (LO) {LO}
-                to ++(0:4 * \widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0}}] (H) {H}
-                to ++(0:\widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{1}}] {E}
-                to ++(0:\widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{2}}] {L}
-                to ++(0:\widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{3}}] {0};
+                to ++(0:4 * \widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblueid}\id{i}{A1}{0}}] (H) {H}
+                to ++(0:\widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblueid}\id{i}{A1}{1}}] {E}
+                to ++(0:\widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblueid}\id{i}{A1}{2}}] {L}
+                to ++(0:\widthletter) node[letter, fill=mydarkblue, label=below:{\color{mydarkblueid}\id{i}{A1}{3}}] {0};
 
                 \draw[->, thick] (LO) -- node[below, align=center]{\emph{rename}} (H);
             \end{tikzpicture}
@@ -375,7 +376,7 @@ This operation reassigns arbitrary identifiers to elements.
                 to ++(0:\widthletter) node[letter, label=below:{\id{i}{B0}{0}}] {H}
                 to ++(0:\widthletter) node[letter, fill=mydarkorange, label=above:{\color{mydarkorange}\id{i}{B0}{0}\id{f}{A0}{0}}] {E}
                 to ++(0:\widthletter) node[block, label=below:{\id{i}{B0}{1..2}}] (LO) {LO}
-                to ++(0:4 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..3}}] (HELO) {HELO};
+                to ++(0:4 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblueid}\id{i}{A1}{0..3}}] (HELO) {HELO};
 
             \draw[->, thick] (LO) -- node[below, align=center]{\emph{rename}} (HELO);
         \end{tikzpicture}
@@ -424,8 +425,8 @@ It is thus necessary to handle concurrent operations to \emph{rename} operations
     \begin{tikzpicture}
         \path
             node {\textbf{A}}
-            to ++(0:2 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..3}}] (HELO) {HELO}
-            to ++(0:4 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..3}}]  {HELO}
+            to ++(0:2 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblueid}\id{i}{A1}{0..3}}] (HELO) {HELO}
+            to ++(0:4 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblueid}\id{i}{A1}{0..3}}]  {HELO}
             to ++(0:\widthblock) node[cross, letter, fill=mylightorange, label=above:{\color{mylightorange}\id{i}{B0}{0}\id{m}{B1}{0}}] (right) {L};
 
         \path
@@ -463,10 +464,10 @@ By reassigning this id to the concurrently added element, node A is able to inse
     \begin{tikzpicture}
         \path
             node[label=below:{(epoch 1)}] {\textbf{A}}
-            to ++(0:2 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..3}}] (HELO) {HELO}
-            to ++(0:4 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{0..1}}]  {HE}
-            to ++(0:\widthblock) node[letter, fill=mylightblue, label=above:{\color{mylightblue!20!mydarkblue}\id{i}{A1}{1}\id{i}{B0}{0}\id{m}{B1}{0}}] (right) {L}
-            to ++(0:\widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblue}\id{i}{A1}{2..3}}]  {LO};
+            to ++(0:2 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblueid}\id{i}{A1}{0..3}}] (HELO) {HELO}
+            to ++(0:4 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblueid}\id{i}{A1}{0..1}}]  {HE}
+            to ++(0:\widthblock) node[letter, fill=mylightblue, label=above:{\color{mylightblue!20!mydarkblueid}\id{i}{A1}{1}\id{i}{B0}{0}\id{m}{B1}{0}}] (right) {L}
+            to ++(0:\widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblueid}\id{i}{A1}{2..3}}]  {LO};
 
 
         \path
