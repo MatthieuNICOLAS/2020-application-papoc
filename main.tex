@@ -424,14 +424,14 @@ It is thus necessary to handle concurrent operations to \emph{rename} operations
     \centering
     \begin{tikzpicture}
         \path
-            node {\textbf{A}}
+            node[label=below:{(after renaming)}] {\textbf{A}}
             to ++(0:2 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblueid}\id{i}{A1}{0..3}}] (HELO) {HELO}
             to ++(0:4 * \widthletter) node[block, fill=mydarkblue, label=below:{\color{mydarkblueid}\id{i}{A1}{0..3}}]  {HELO}
             to ++(0:\widthblock) node[cross, letter, fill=mylightorange, label=above:{\color{mylightorange}\id{i}{B0}{0}\id{m}{B1}{0}}] (right) {L};
 
         \path
-            to ++(270:2) node {\textbf{B}}
-            to ++(0:\widthletter) node[letter, label=below:{\id{i}{B0}{0}}] {H}
+            to ++(270:2) node[label=below:{(before renaming)}]  {\textbf{B}}
+            to ++(0:2*\widthletter) node[letter, label=below:{\id{i}{B0}{0}}] {H}
             to ++(0:\widthletter) node[letter, fill=mydarkorange, label=above:{\color{mydarkorange}\id{i}{B0}{0}\id{f}{A0}{0}}] {E}
             to ++(0:\widthletter) node[letter, fill=mylightorange, label=below:{\color{mylightorange}\id{i}{B0}{0}\id{m}{B1}{0}}] (left) {L}
             to ++(0:\widthletter) node[block, label=below:{\id{i}{B0}{1..2}}] {LO};
